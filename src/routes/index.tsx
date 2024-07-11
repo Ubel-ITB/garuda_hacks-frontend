@@ -4,6 +4,7 @@ import Layout from "./Layout";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import IsLoggedIn from "./loaders/IsLoggedIn";
+import NewsPage from "../pages/NewsPage/NewsPage";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <HomePage />,
+      },
+      {
+        path: "news",
+        element: <NewsPage />,
       },
     ],
   },
