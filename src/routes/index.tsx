@@ -4,37 +4,55 @@ import Layout from "./Layout";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import IsLoggedIn from "./loaders/IsLoggedIn";
+import { CurrentUserProvider } from "../lib/contexts/CurrentUserContext";
+import ProfilePage from "../pages/ProfilePage/ProfilePage";
 
 const router = createBrowserRouter([
   {
-    path: "/auth",
-    element: <Outlet />,
+    path: "",
+    element: (
+      <CurrentUserProvider>
+        <Outlet />
+      </CurrentUserProvider>
+    ),
     children: [
       {
-        path: "login",
-        element: <LoginPage />,
+        path: "/auth",
+        element: <Outlet />,
+        children: [
+          {
+            path: "sign-in",
+            element: <LoginPage />,
+          },
+          {
+            path: "sign-up",
+            element: <RegisterPage />,
+          },
+        ],
       },
       {
-        path: "register",
-        element: <RegisterPage />,
+        path: "/",
+        element: <Layout />,
+        children: [
+          {
+            path: "",
+            element: <HomePage />,
+          },
+        ],
       },
-    ],
-  },
-  {
-    path: "/",
-    element: <Layout />,
-    children: [
       {
-        path: "",
-        element: <HomePage />,
+        //protected routes
+        path: "/",
+        loader: IsLoggedIn,
+        element: <Layout />,
+        children: [
+          {
+            path: "profile/:username",
+            element: <ProfilePage />,
+          },
+        ],
       },
     ],
-  },
-  {
-    //protected routes
-    path: "/",
-    loader: IsLoggedIn,
-    children: [{}],
   },
 ]);
 

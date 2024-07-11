@@ -11,14 +11,13 @@ const IsLoggedIn = async () => {
         // Replace this with your actual API call
         const token = accessToken || localStorage.getItem("access_token");
         if (token) {
-          const { data: user } = await axios.post(
+          const { data: user } = await axios.get(
             `${BACKEND_BASE_URL}/auth/user-info`,
-            {},
             {
               headers: {
                 access_token: token,
               },
-            }
+            },
           );
           return user;
         } else {
@@ -32,7 +31,7 @@ const IsLoggedIn = async () => {
     const user = await fetchUser();
     return { user };
   } catch (error) {
-    Swal.fire({
+    await Swal.fire({
       icon: "error",
       title: "Oops...",
       text: "Please re-login",
