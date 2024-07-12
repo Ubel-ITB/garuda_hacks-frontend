@@ -37,30 +37,33 @@ const NewsPageSection1 = () => {
                 src={post?.imgUrl}
                 alt={post?.title}
               />
-              <NavLink
-                to={"/news/" + post?._id}
-                className="group z-10 mx-[30px] flex h-full flex-col justify-center"
-              >
+              <div className="group z-10 mx-[30px] flex h-full flex-col justify-center">
                 <h3>
-                  <span className="line-clamp-2 bg-gradient-to-r from-blue-400 to-blue-500 bg-[length:0px_30px] bg-left-bottom bg-no-repeat text-[70px] font-bold text-blue-800 transition-[background-size] duration-500 group-hover:bg-[length:100%_30px]">
+                  <NavLink
+                    to={"/news/" + post?._id}
+                    className="line-clamp-2 bg-gradient-to-r from-blue-400 to-blue-500 bg-[length:0px_30px] bg-left-bottom bg-no-repeat text-[70px] font-bold text-blue-800 transition-[background-size] duration-500 group-hover:bg-[length:100%_30px]"
+                  >
                     {post?.title}
-                  </span>
+                  </NavLink>
                 </h3>
                 <div className="flex flex-col">
                   <div className="flex flex-row items-center justify-between gap-2">
-                    <div className="flex flex-row items-center justify-center gap-2">
+                    <NavLink
+                      to={"/profile/" + post.authorName}
+                      className="flex flex-row items-center justify-center gap-2"
+                    >
                       <img
-                        src={post?.authorProfilePictureUrl}
+                        src={post?.authorProfilePicUrl}
                         className="aspect-square h-6 rounded-full"
                       />
                       <span className="text-sm text-slate-700">
                         {post?.authorName}
                       </span>
-                    </div>
+                    </NavLink>
                     <Category category={post?.categoryName as string} />
                   </div>
                 </div>
-              </NavLink>
+              </div>
             </div>
           </SwiperSlide>
         ))}

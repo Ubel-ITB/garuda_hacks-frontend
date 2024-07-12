@@ -72,13 +72,7 @@ const AllNewsPage = () => {
                   key={post._id}
                   className="h-[360px]"
                 >
-                  <NewsCard
-                    imgUrl={post.imgUrl}
-                    title={post.title}
-                    authorProfilePicUrl={post.authorProfilePictureUrl as string}
-                    categoryName={post.categoryName as string}
-                    authorName={post.authorName as string}
-                  />
+                  <NewsCard post={post} />
                 </NavLink>
               ))}
             </div>

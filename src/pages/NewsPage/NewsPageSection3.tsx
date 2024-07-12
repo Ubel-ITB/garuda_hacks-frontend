@@ -57,18 +57,9 @@ const NewsPageSection3 = () => {
           </h4>
           <div className="grid h-fit w-full grid-cols-1 gap-10 p-2 sm:grid-cols-2 lg:grid-cols-4">
             {filteredPosts.map((post) => (
-              <NavLink
-                to={"/news/" + post._id}
-                key={post._id}
-                className="h-[340px]"
-              >
-                <NewsCard
-                  imgUrl={post.imgUrl}
-                  title={post.title}
-                  categoryName={post.categoryName as string}
-                  isSmall
-                />
-              </NavLink>
+              <div key={post._id} className="h-[340px]">
+                <NewsCard post={post} isSmall />
+              </div>
             ))}
           </div>
           <NavLink
@@ -86,18 +77,9 @@ const NewsPageSection3 = () => {
           </h4>
           <div className="grid h-fit w-full grid-cols-1 gap-10 p-2 sm:grid-cols-2 lg:grid-cols-4">
             {filteredPosts2.map((post) => (
-              <NavLink
-                to={"/news/" + post._id}
-                key={post._id}
-                className="h-[340px]"
-              >
-                <NewsCard
-                  imgUrl={post.imgUrl}
-                  title={post.title}
-                  categoryName={post.categoryName as string}
-                  isSmall
-                />
-              </NavLink>
+              <div key={post._id} className="h-[340px]">
+                <NewsCard post={post} isSmall />
+              </div>
             ))}
           </div>
           <NavLink

@@ -73,7 +73,7 @@ const ReportPage = () => {
       if (selectedReport && mapRef.current) {
         mapRef.current.flyTo({
           center: [selectedReport.lng, selectedReport.lat],
-          zoom: 15,
+          zoom: 17,
         });
       }
     }
