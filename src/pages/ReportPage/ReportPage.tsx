@@ -1,21 +1,24 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState } from "react";
 import Map, { NavigationControl, Marker, ViewState } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { NavLink, useNavigate } from "react-router-dom";
-import TextAreaInput from "../../components/universal/TextAreaInput";
-import CustomAxios from "../../lib/actions/CustomAxios";
-import { handleFetchError } from "../../lib/actions/HandleError";
+import { NavLink } from "react-router-dom";
 import { IReportCategory } from "../../lib/types/ReportCategory";
-import { CurrentUserContext } from "../../lib/contexts/CurrentUserContext";
+import { IReportForm } from "../../lib/types/Report";
 import { MAPBOX_TOKEN } from "../../lib/constant";
 import useFetch from "../../lib/CustomHooks/useFetch";
 import Button from "../../components/universal/Button";
+import { IoLocation } from "react-icons/io5";
 
 const ReportPage = () => {
-  const { data, loading } = useFetch({ url: "/categories" });
+  const { response: reports } = useFetch<IReportForm[]>({
+    url: "/reports",
+  });
+  const { response: categories } = useFetch<IReportCategory[]>({
+    url: "/categories",
+  });
   const [viewport, setViewport] = useState<ViewState>({
-    latitude: -6.121435, // Default latitude
-    longitude: 106.774124, // Default longitude
+    latitude: -6.256754465448308, // Default latitude
+    longitude: 106.61895122539383, // Default longitude
     zoom: 12,
     bearing: 0,
     pitch: 0,
@@ -33,9 +36,16 @@ const ReportPage = () => {
             mapboxAccessToken={MAPBOX_TOKEN}
             onMove={(evt) => setViewport(evt.viewState)}
           >
-            <Marker latitude={viewport.latitude} longitude={viewport.longitude}>
-              <div className="h-4 w-4 rounded-full border-2 border-white bg-red-500"></div>
-            </Marker>
+            <NavigationControl position="top-left" />
+            {reports?.map((report) => (
+              <Marker
+                key={report._id}
+                latitude={report.lat}
+                longitude={report.lng}
+              >
+                <IoLocation color="red" className="h-auto w-4" />
+              </Marker>
+            ))}
           </Map>
         </div>
         <div className="w-fit max-w-[300px] px-6">
@@ -49,15 +59,16 @@ const ReportPage = () => {
 
             <section className="py-2">
               <h2>Filter By Categories</h2>
-              <div className="flex flex-wrap">
-                {JSON.stringify(data)}
-                <NavLink to="?filter=jalanan-rusak" className="text-blue-500">
-                  Jalanan rusak
-                </NavLink>
-                <NavLink to="?filter=sampah-menumpuk" className="text-red-500">
-                  Sampah Menumpuk
-                </NavLink>
-              </div>
+              <select className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <option value="" disabled>
+                  Select a category
+                </option>
+                {categories?.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
             </section>
           </div>
         </div>
