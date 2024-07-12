@@ -8,7 +8,7 @@ import { IReport, IReportProgressForm } from "../../lib/types/Report";
 import { MAPBOX_TOKEN } from "../../lib/constant";
 import useFetch from "../../lib/CustomHooks/useFetch";
 import Button from "../../components/universal/Button";
-import Modal from "../../components/universal/Modal"; // Import the Modal component
+import Modal from "../../components/universal/Modal";
 import { IoLocation } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 import { CurrentUserContext } from "../../lib/contexts/CurrentUserContext";
@@ -17,20 +17,21 @@ import TextAreaInput from "../../components/universal/TextAreaInput";
 import CustomAxios from "../../lib/actions/CustomAxios";
 import { handleFetchError } from "../../lib/actions/HandleError";
 import Swal from "sweetalert2";
+import { FaShareAlt } from "react-icons/fa";
 
 const ReportPage = () => {
   const navigate = useNavigate();
   const currentUserContext = useContext(CurrentUserContext);
-  const { response: reports } = useFetch<IReport[]>({
+  const { response: reports, refetch: refetchReports } = useFetch<IReport[]>({
     url: "/reports",
   });
   const { response: categories } = useFetch<IReportCategory[]>({
     url: "/categories",
   });
   const [viewport, setViewport] = useState<ViewState>({
-    latitude: -6.256754465448308, // Default latitude
-    longitude: 106.61895122539383, // Default longitude
-    zoom: 12,
+    latitude: -6.256754465448308,
+    longitude: 106.61895122539383,
+    zoom: 15,
     bearing: 0,
     pitch: 0,
     padding: { top: 0, bottom: 0, left: 0, right: 0 },
@@ -77,6 +78,7 @@ const ReportPage = () => {
       }
     }
   };
+
   const onChange = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
@@ -101,7 +103,6 @@ const ReportPage = () => {
       ...formData,
     };
 
-    console.log(updateData);
     const response = await Swal.fire({
       title: "Are you sure to mark this done?",
       icon: "info",
@@ -168,6 +169,28 @@ const ReportPage = () => {
     }
   };
 
+  const handleShareClick = async (
+    reportId: string,
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(
+        `http://localhost:3000/reports/${reportId}`,
+      );
+      await CustomAxios("put", `/reports/${reportId}/share`);
+
+      Swal.fire({
+        title: "URL copied to clipboard and share count updated!",
+        icon: "success",
+      });
+
+      await refetchReports();
+    } catch (error) {
+      handleFetchError(error);
+    }
+  };
+
   return (
     <main className="relative flex h-0 grow flex-col pt-24">
       <div className="flex h-0 w-screen grow">
@@ -192,7 +215,13 @@ const ReportPage = () => {
                   color={
                     selectedReportId === report._id
                       ? "blue"
-                      : `${report.status === "Reported" || !report.status ? "red" : ""}${report.status === "On Progress" ? "#FFBF00" : ""}${report.status === "Finished" ? "green" : ""}`
+                      : `${
+                          report.status === "Reported" || !report.status
+                            ? "red"
+                            : ""
+                        }${
+                          report.status === "On Progress" ? "#FFBF00" : ""
+                        }${report.status === "Finished" ? "green" : ""}`
                   }
                   className="h-auto w-8"
                 />
@@ -200,8 +229,8 @@ const ReportPage = () => {
             ))}
           </Map>
         </div>
-        <div className="h-full w-[300px] max-w-[300px] overflow-y-auto bg-gradient-to-b from-gray-100 to-gray-200 px-6 pb-10">
-          <div className="flex flex-col items-start">
+        <div className="h-full w-[500px] max-w-[500px] overflow-y-auto bg-gradient-to-b from-gray-100 to-gray-200 px-6 pb-10">
+          <div className="flex w-full flex-col items-start">
             <div className="flex w-full items-center justify-between py-2">
               <h1 className="text-2xl font-bold">Report</h1>
               <NavLink to="/reports/create">
@@ -257,22 +286,29 @@ const ReportPage = () => {
                     }`}
                   >
                     <div className="flex w-full grow flex-col items-start justify-start text-wrap">
-                      <div className="flex items-center justify-center gap-2">
-                        <div
-                          className={twMerge(
-                            `aspect-square h-auto w-4 rounded-full ${(el.status === "Reported" || !el.status) && "bg-red-700"}`,
-                            `${el.status === "On Progress" && "bg-[#FFBF00]"}`,
-                            `${el.status === "Finished" && "bg-green-700"}`,
-                          )}
-                        />
-                        <p>{el.text}</p>
+                      <div className="flex w-full flex-row items-center justify-between p-2">
+                        <div className="flex items-center justify-center gap-2">
+                          <div
+                            className={twMerge(
+                              `aspect-square h-auto w-4 rounded-full ${(el.status === "Reported" || !el.status) && "bg-red-700"}`,
+                              `${el.status === "On Progress" && "bg-[#FFBF00]"}`,
+                              `${el.status === "Finished" && "bg-green-700"}`,
+                            )}
+                          />
+                          <p>{el.text}</p>
+                        </div>
+                        <Button
+                          onClick={(event) => handleShareClick(el._id, event)}
+                        >
+                          <FaShareAlt />
+                        </Button>
                       </div>
                       {el._id === selectedReportId && (
                         <div className="text-sm font-light text-slate-700">
-                          <p>Progress: {el.status}</p>
-                          <p>Shares: {el.totalshares}</p>
-                          <p>Upvotes: 0</p>
-                          <p>Downvotes: 0</p>
+                          <p className="px-2 py-1">Progress: {el.status}</p>
+                          <p className="px-2 py-1">Shares: {el.totalshares}</p>
+                          <p className="px-2 py-1">Upvotes: 0</p>
+                          <p className="mb-5 px-2 py-1">Downvotes: 0</p>
                           {el.status !== "Reported" && (
                             <>
                               <img
@@ -280,7 +316,9 @@ const ReportPage = () => {
                                 alt=""
                                 className="aspect-square h-auto w-full bg-slate-600/10 object-contain"
                               />
-                              <p>Description: {el.progress.text}</p>
+                              <p className="mt-5">
+                                Description: {el.progress.text}
+                              </p>
                             </>
                           )}
                           {(currentUserContext?.currentUser?.role ===
