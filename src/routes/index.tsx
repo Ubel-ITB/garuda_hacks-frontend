@@ -5,6 +5,8 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import IsLoggedIn from "./loaders/IsLoggedIn";
 import NewsPage from "../pages/NewsPage/NewsPage";
+import { CurrentUserProvider } from "../lib/contexts/CurrentUserContext";
+import ProfilePage from "../pages/ProfilePage/ProfilePage";
 
 const router = createBrowserRouter([
   {
