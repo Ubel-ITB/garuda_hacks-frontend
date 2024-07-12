@@ -9,6 +9,13 @@ export interface IReport {
   CategoryId: string;
   totalshares: number;
   status: string;
+  progress: {
+    officerId: string;
+    text: string;
+    imgUrl: string;
+  };
+  UpvotedUserIds: [];
+  DownVotedUserIds: [];
 }
 
 export interface IReportForm {
@@ -19,4 +26,13 @@ export interface IReportForm {
   lng: number;
   selectedFile: File | null;
   CategoryId: string;
+  totalshares: number;
+  status: string;
+  progress: {
+    officerId: string;
+    text: string;
+    imgUrl: string;
+  };
+  UpvotedUserIds: [];
+  DownVotedUserIds: [];
 }
