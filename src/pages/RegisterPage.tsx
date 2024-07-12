@@ -76,6 +76,11 @@ const RegisterPage = () => {
             sign in
           </NavLink>
         </div>
+        <NavLink to="/" className="w-full">
+          <Button className="w-full bg-blue-200 text-blue-800 hover:bg-blue-300">
+            Continue As a Guest
+          </Button>
+        </NavLink>
       </form>
     </div>
   );

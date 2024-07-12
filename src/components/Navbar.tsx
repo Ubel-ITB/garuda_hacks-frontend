@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { CurrentUserContext } from "../lib/contexts/CurrentUserContext";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { twMerge } from "tailwind-merge";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const currentUserContext = useContext(CurrentUserContext);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -19,6 +20,12 @@ const Navbar = () => {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.setItem("access_token", "");
+    currentUserContext?.setCurrentUser(null);
+    navigate("/auth/sign-in");
+  };
 
   const className = {
     navBarScrolled: twMerge(
@@ -80,7 +87,7 @@ const Navbar = () => {
           </button>
         </nav>
         {currentUserContext?.currentUser?.username ? (
-          <button className="group relative rounded-full border-2 border-[#4a6cf7] px-6 py-1 hover:bg-[#93a9ff]">
+          <div className="group relative rounded-full border-2 border-[#4a6cf7] px-6 py-1 hover:bg-[#93a9ff]">
             <p>{currentUserContext?.currentUser?.username?.split(" ")[0]}</p>
             <div className="absolute bottom-0 right-0 h-0 translate-y-[100%] p-2 pt-4 opacity-0 group-hover:h-fit group-hover:opacity-100">
               <div className="flex flex-col items-stretch rounded-lg border-[1px] bg-white p-2 text-start shadow-md">
@@ -90,9 +97,15 @@ const Navbar = () => {
                 >
                   Profile
                 </NavLink>
+                <button
+                  className="p-1 pr-8 text-red-600 hover:text-red-400"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
               </div>
             </div>
-          </button>
+          </div>
         ) : (
           <div className="flex gap-4">
             <NavLink
