@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { CurrentUserContext } from "../lib/contexts/CurrentUserContext";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { twMerge } from "tailwind-merge";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const currentUserContext = useContext(CurrentUserContext);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -20,6 +21,12 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleLogout = () => {
+    localStorage.setItem("access_token", "");
+    currentUserContext?.setCurrentUser(null);
+    navigate("/auth/sign-in");
+  };
+
   const className = {
     navBarScrolled: twMerge(
       `${isScrolled ? "h-16 backdrop-blur-md bg-white/70 shadow-md" : "h-24"}`,
@@ -32,15 +39,20 @@ const Navbar = () => {
     <header
       className={`fixed left-0 top-0 z-[100] flex w-screen items-center justify-between px-6 font-[500] duration-100 ease-in lg:px-24 ${className.navBarScrolled}`}
     >
-      <NavLink to="/">Nav Logo</NavLink>
+      <NavLink
+        to="/"
+        className="text-2xl font-bold tracking-wide text-blue-700"
+      >
+        NReport
+      </NavLink>
       <div className="flex gap-4">
         <nav className="hidden items-center justify-center gap-8 md:flex">
           <NavLink to="/" className="hover:text-blue-600">
             Home
           </NavLink>
-          <NavLink to="/about" className="hover:text-blue-600">
+          {/* <NavLink to="/about" className="hover:text-blue-600">
             About
-          </NavLink>
+          </NavLink> */}
           <button className="group relative flex h-fit items-center gap-1">
             Pages{" "}
             <svg
@@ -57,7 +69,7 @@ const Navbar = () => {
               ></path>
             </svg>
             <div className="absolute bottom-0 right-0 h-0 translate-y-[100%] p-2 pt-4 opacity-0 group-hover:h-fit group-hover:opacity-100">
-              <div className="flex flex-col items-stretch rounded-lg bg-white p-2 text-start">
+              <div className="flex flex-col items-stretch rounded-lg border-[1px] bg-white p-2 text-start shadow-md">
                 <NavLink
                   to="/reports"
                   className="text-nowrap p-2 hover:text-blue-500"
@@ -75,19 +87,25 @@ const Navbar = () => {
           </button>
         </nav>
         {currentUserContext?.currentUser?.username ? (
-          <button className="group relative rounded-full border-2 border-[#4a6cf7] px-6 py-1 hover:bg-[#93a9ff]">
+          <div className="group relative rounded-full border-2 border-[#4a6cf7] px-6 py-1 hover:bg-[#93a9ff]">
             <p>{currentUserContext?.currentUser?.username?.split(" ")[0]}</p>
             <div className="absolute bottom-0 right-0 h-0 translate-y-[100%] p-2 pt-4 opacity-0 group-hover:h-fit group-hover:opacity-100">
-              <div className="flex flex-col items-stretch rounded-lg bg-white p-2 text-start">
+              <div className="flex flex-col items-stretch rounded-lg border-[1px] bg-white p-2 text-start shadow-md">
                 <NavLink
                   to={`/profile/${currentUserContext.currentUser.username}`}
                   className="text-nowrap p-1 pr-2 hover:text-blue-500"
                 >
                   Profile
                 </NavLink>
+                <button
+                  className="p-1 pr-8 text-red-600 hover:text-red-400"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
               </div>
             </div>
-          </button>
+          </div>
         ) : (
           <div className="flex gap-4">
             <NavLink
@@ -122,13 +140,13 @@ const Navbar = () => {
           >
             Home
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/about"
             className="hover:text-blue-600"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             About
-          </NavLink>
+          </NavLink> */}
           <NavLink
             to="/reports"
             className="hover:text-blue-600"
