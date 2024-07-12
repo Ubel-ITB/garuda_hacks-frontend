@@ -41,7 +41,7 @@ const DetailsPage = () => {
             <div className="flex flex-row items-center justify-center gap-2">
               <img
                 src={post.authorProfilePicUrl}
-                className="aspect-square h-[40px] rounded-full"
+                className="aspect-square h-[40px] w-auto rounded-full object-cover"
                 alt="Author"
               />
               <span className="text-sm text-slate-700">{post.authorName}</span>
