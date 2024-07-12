@@ -3,6 +3,7 @@ import { CurrentUserContext } from "../lib/contexts/CurrentUserContext";
 import { NavLink, useNavigate } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { twMerge } from "tailwind-merge";
+import { NavHashLink } from "react-router-hash-link";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -47,9 +48,16 @@ const Navbar = () => {
       </NavLink>
       <div className="flex gap-4">
         <nav className="hidden items-center justify-center gap-8 md:flex">
-          <NavLink to="/" className="hover:text-blue-600">
+          <NavHashLink to="/#home" smooth className="hover:text-blue-600">
             Home
-          </NavLink>
+          </NavHashLink>
+          <NavHashLink
+            to="/#features"
+            smooth
+            className="cursor-pointer hover:text-blue-600"
+          >
+            Main Features
+          </NavHashLink>
           {/* <NavLink to="/about" className="hover:text-blue-600">
             About
           </NavLink> */}
@@ -133,13 +141,14 @@ const Navbar = () => {
         className={`fixed left-0 top-0 z-50 min-h-screen w-screen bg-white p-6 transition-transform duration-300 ${!isMobileMenuOpen ? "-translate-y-[100%]" : isScrolled ? "translate-y-16" : "translate-y-24"} md:hidden`}
       >
         <nav className="flex flex-col items-center gap-6">
-          <NavLink
-            to="/"
+          <NavHashLink
+            to="/#home"
+            smooth
             className="hover:text-blue-600"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Home
-          </NavLink>
+          </NavHashLink>
           {/* <NavLink
             to="/about"
             className="hover:text-blue-600"
@@ -147,6 +156,14 @@ const Navbar = () => {
           >
             About
           </NavLink> */}
+          <NavHashLink
+            to="features-section"
+            smooth={true}
+            className="cursor-pointer hover:text-blue-600"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Main Features
+          </NavHashLink>
           <NavLink
             to="/reports"
             className="hover:text-blue-600"

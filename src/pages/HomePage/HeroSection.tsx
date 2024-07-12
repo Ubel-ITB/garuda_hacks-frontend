@@ -20,11 +20,11 @@ const HeroSection = () => {
             // Same substring at the start will only be typed out once, initially
             "Report what is going on in your neighbourhood",
             1000, // wait 1s before replacing "Mice" with "Hamsters"
-            "Dirty Place?",
+            "Unclean location?",
             1000,
-            "Dirty Place? Burning Trash?",
+            "Unclean location? Burning Trash?",
             1000,
-            "Dirty Place? Burning Trash? Broken Lane?",
+            "Unclean location? Burning Trash? Broken Lane?",
             1000,
           ]}
           wrapper="h3"
