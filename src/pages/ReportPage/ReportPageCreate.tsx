@@ -35,6 +35,15 @@ const ReportPageCreate: React.FC = () => {
     lng: 106.61895122539383,
     selectedFile: null,
     CategoryId: "",
+    totalshares: 0,
+    status: "Reported",
+    progress: {
+      officerId: "",
+      text: "",
+      imgUrl: "",
+    },
+    UpvotedUserIds: [],
+    DownVotedUserIds: [],
   });
 
   const handleSetLocation = () => {

@@ -7,6 +7,8 @@ export interface IReport {
   lng: number;
   selectedFile: File | null;
   CategoryId: string;
+  totalshares: number;
+  status: string;
 }
 
 export interface IReportForm {
