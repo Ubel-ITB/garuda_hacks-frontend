@@ -1,30 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 
-interface TextAreaInputProps {
-  label?: string;
-  placeholder?: string;
-  rows?: number;
-  cols?: number;
-  onChange?: (value: string) => void;
-}
-
-const TextAreaInput: React.FC<TextAreaInputProps> = ({
+const TextAreaInput = ({
   label,
   placeholder = "Enter your text here...",
+  name,
   rows = 5,
   cols = 40,
+  value,
   onChange,
+}: {
+  label?: string;
+  placeholder?: string;
+  name: string;
+  rows?: number;
+  cols?: number;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  value: string;
 }) => {
-  const [value, setValue] = useState("");
-
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = event.target.value;
-    setValue(newValue);
-    if (onChange) {
-      onChange(newValue);
-    }
-  };
-
   return (
     <div className="mb-4">
       {label && (
@@ -34,12 +26,13 @@ const TextAreaInput: React.FC<TextAreaInputProps> = ({
       )}
       <textarea
         className="focus:shadow-outline w-full rounded-lg border px-3 py-2 text-gray-700 focus:outline-none"
+        name={name}
         placeholder={placeholder}
         rows={rows}
         cols={cols}
         value={value}
-        onChange={handleChange}
-      />
+        onChange={onChange}
+      ></textarea>
     </div>
   );
 };

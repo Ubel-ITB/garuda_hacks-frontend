@@ -4,10 +4,11 @@ import Layout from "./Layout";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import IsLoggedIn from "./loaders/IsLoggedIn";
-import ReportPage from "../pages/ReportPage/ReportPage";
 import NewsPage from "../pages/NewsPage/NewsPage";
 import { CurrentUserProvider } from "../lib/contexts/CurrentUserContext";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
+import ReportPageCreate from "../pages/ReportPage/ReportPageCreate";
+import ReportPage from "../pages/ReportPage/ReportPage";
 
 const router = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
           {
             path: "profile/:username",
             element: <ProfilePage />,
+          },
+          {
+            path: "reports/create",
+            element: <ReportPageCreate />,
           },
         ],
       },
