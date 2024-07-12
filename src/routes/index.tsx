@@ -5,6 +5,9 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import IsLoggedIn from "./loaders/IsLoggedIn";
 import ReportPage from "../pages/ReportPage/ReportPage";
+import NewsPage from "../pages/NewsPage/NewsPage";
+import { CurrentUserProvider } from "../lib/contexts/CurrentUserContext";
+import ProfilePage from "../pages/ProfilePage/ProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: "report",
         element: <ReportPage />,
+      },
+      {
+        path: "news",
+        element: <NewsPage />,
       },
     ],
   },
