@@ -24,7 +24,8 @@ const FeaturesSection = () => {
             Report Location
           </h3>
           <p className="text-start text-[#8890a0]">
-            Location based reports help ease citizen and officer
+            Location-based reports help streamline communication between
+            citizens and executives.
           </p>
         </FeatureBox>
         <FeatureBox>
@@ -35,7 +36,7 @@ const FeaturesSection = () => {
             Know Progress
           </h3>
           <p className="text-start text-[#8890a0]">
-            Know how Executives response toward all those reports
+            Know how Executives respond toward all those reports
           </p>
         </FeatureBox>
         <FeatureBox>
@@ -57,7 +58,7 @@ const FeaturesSection = () => {
             Filter news
           </h3>
           <p className="text-start text-[#8890a0]">
-            Never miss any news about academic, sport, and others
+            Stay updated with the latest news on academics, health, and more
           </p>
         </FeatureBox>
         <FeatureBox>
@@ -68,7 +69,7 @@ const FeaturesSection = () => {
             Area Exclusive
           </h3>
           <p className="text-start text-[#8890a0]">
-            Never miss any news in your neighbourhood
+            Stay informed about local news in your neighborhood
           </p>
         </FeatureBox>
         <FeatureBox>
@@ -79,7 +80,7 @@ const FeaturesSection = () => {
             Community driven
           </h3>
           <p className="text-start text-[#8890a0]">
-            Everyone can report, Officer will response
+            Anyone can report issues; officers will respond promptly
           </p>
         </FeatureBox>
       </div>

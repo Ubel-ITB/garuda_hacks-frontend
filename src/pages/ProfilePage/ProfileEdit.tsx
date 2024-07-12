@@ -77,7 +77,7 @@ const ProfilePageEdit = () => {
   };
 
   return (
-    <main className="relative w-full grow pt-24">
+    <main className="relative flex min-h-screen w-full items-center justify-center py-6">
       <div className="flex h-fit min-h-full w-full flex-col items-center justify-center gap-8">
         <form
           action="post"

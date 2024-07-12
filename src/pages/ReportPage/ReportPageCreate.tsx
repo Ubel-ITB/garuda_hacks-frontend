@@ -123,7 +123,7 @@ const ReportPageCreate: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full grow pb-6 pt-20">
+    <div className="relative w-full grow py-6">
       <form
         onSubmit={onSubmit}
         className="mx-auto h-fit w-full max-w-[1000px] items-center justify-center rounded-lg bg-gray-50/10 pb-4 pt-2"

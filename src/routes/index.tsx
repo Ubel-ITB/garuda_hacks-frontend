@@ -61,23 +61,18 @@ const router = createBrowserRouter([
             path: "news/all-news",
             element: <AllNewsPage />,
           },
-        ],
-      },
-      {
-        path: "/create",
-        element: <Outlet />,
-        children: [
           {
-            path: "news",
-            element: <CreateNewsPage />,
+            path: "profile/:username",
+            element: <ProfilePage />,
           },
         ],
       },
+
       {
         //protected routes
         path: "/",
         loader: IsLoggedIn,
-        element: <Layout />,
+        element: <Outlet />,
         children: [
           {
             path: "profile",
@@ -86,16 +81,16 @@ const router = createBrowserRouter([
             },
           },
           {
-            path: "profile/:username",
-            element: <ProfilePage />,
-          },
-          {
             path: "reports/create",
             element: <ReportPageCreate />,
           },
           {
             path: "profile/:username/edit",
             element: <ProfilePageEdit />,
+          },
+          {
+            path: "create/news",
+            element: <CreateNewsPage />,
           },
         ],
       },

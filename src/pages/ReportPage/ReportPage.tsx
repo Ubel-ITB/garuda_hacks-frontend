@@ -26,20 +26,20 @@ import Select from "react-select";
 const steps = [
   {
     element: "#add-button",
-    intro: "Not happy with your neighbourhood condition? Add a report",
+    intro: "Not happy with your neighbourhood condition? Make a report",
     position: "right",
   },
   {
     element: "#filter-category",
-    intro: "Filter reports by category (Broken Lane, Unclean Location, etc)",
+    intro: "Filter reports by category (Potholes, Unclean Location, etc)",
   },
   {
     element: "#filter-status",
-    intro: "Filter by status (Reported, On Progress, Completed",
+    intro: "Filter by status (Reported, On Progress, Completed)",
   },
   {
     element: "#reports-list",
-    intro: "Lists of reports will be shown here",
+    intro: "List of reports will be shown here",
   },
 ];
 

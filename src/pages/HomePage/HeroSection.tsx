@@ -22,9 +22,9 @@ const HeroSection = () => {
             1000, // wait 1s before replacing "Mice" with "Hamsters"
             "Unclean location?",
             1000,
-            "Unclean location? Burning Trash?",
+            "Unclean location? Improper Waste Burning?",
             1000,
-            "Unclean location? Burning Trash? Broken Lane?",
+            "Unclean location? Improper Waste Burning? Spotted Potholes?",
             1000,
           ]}
           wrapper="h3"
