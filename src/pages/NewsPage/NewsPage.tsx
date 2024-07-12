@@ -3,7 +3,7 @@ import NewsPageSection2 from "./NewsPageSection2";
 
 const NewsPage = () => {
   return (
-    <div className="min-h-full w-full grow bg-red-400">
+    <div className="min-h-full w-full grow">
       <NewsPageSection1 />
       <NewsPageSection2 />
     </div>

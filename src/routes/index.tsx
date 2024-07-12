@@ -8,6 +8,7 @@ import ReportPage from "../pages/ReportPage/ReportPage";
 import NewsPage from "../pages/NewsPage/NewsPage";
 import { CurrentUserProvider } from "../lib/contexts/CurrentUserContext";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
+import CreateNewsPage from "../pages/NewsPage/CreateNewsPage.tsx/CreateNewsPage";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,20 @@ const router = createBrowserRouter([
           {
             path: "news",
             element: <NewsPage />,
+          },
+          {
+            path: "news/create-post",
+            element: <CreateNewsPage />,
+          },
+        ],
+      },
+      {
+        path: "/create",
+        element: <Outlet />,
+        children: [
+          {
+            path: "news",
+            element: <CreateNewsPage />,
           },
         ],
       },
