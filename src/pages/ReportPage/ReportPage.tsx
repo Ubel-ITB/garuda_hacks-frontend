@@ -29,8 +29,8 @@ const ReportPage = () => {
     url: "/categories",
   });
   const [viewport, setViewport] = useState<ViewState>({
-    latitude: -6.256754465448308,
-    longitude: 106.61895122539383,
+    latitude: -6.256754465448308, // Default latitude
+    longitude: 106.61895122539383, // Default longitude
     zoom: 15,
     bearing: 0,
     pitch: 0,

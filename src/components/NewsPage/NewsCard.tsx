@@ -1,12 +1,14 @@
 import Category from "../universal/Category";
 
 const NewsCard = ({
+  isSmall,
   imgUrl,
   title,
   authorProfilePicUrl,
   authorName,
   categoryName,
 }: {
+  isSmall?: boolean;
   imgUrl: string;
   title: string;
   authorProfilePicUrl?: string;
@@ -25,17 +27,21 @@ const NewsCard = ({
         </div>
         <div className="flex h-[120px] flex-col justify-between">
           <h3>
-            <span className="bg-gradient-to-r from-blue-400 to-blue-500 bg-[length:0px_10px] bg-left-bottom bg-no-repeat text-2xl text-blue-800 transition-[background-size] duration-500 hover:bg-[length:100%_10x] group-hover:bg-[length:100%_10px]">
+            <span
+              className={`bg-gradient-to-r from-blue-400 to-blue-500 bg-[length:0px_10px] bg-left-bottom bg-no-repeat ${isSmall ? "text-lg" : "text-2xl"} line-clamp-2 text-blue-800 transition-[background-size] duration-500 hover:bg-[length:100%_10x] group-hover:bg-[length:100%_10px]`}
+            >
               {title}
             </span>
           </h3>
-          {authorName && categoryName && (
+          {(authorName || categoryName) && (
             <div className="flex flex-row items-center justify-between">
               <div className="flex flex-row items-center justify-center gap-2">
-                <img
-                  src={authorProfilePicUrl}
-                  className="aspect-square h-6 rounded-full"
-                />
+                {authorProfilePicUrl && (
+                  <img
+                    src={authorProfilePicUrl}
+                    className="aspect-square h-6 rounded-full"
+                  />
+                )}
                 {<span className="text-sm text-slate-700">{authorName}</span>}
               </div>
               <Category category={categoryName as string} />
