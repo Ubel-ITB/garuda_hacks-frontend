@@ -27,7 +27,7 @@ const NewsPageSection2 = () => {
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       <div className="grid h-fit w-full grid-cols-3 gap-10 p-2 px-[120px]">
-        {currentUserContext?.currentUser?.role !== "citizen" ? (
+        {currentUserContext?.currentUser?.role === "publisher" ? (
           <NavLink to={"/create/news"}>
             <div className="group flex h-full w-full flex-col items-center justify-center rounded-3xl border-[5px] border-dashed duration-150 ease-in hover:border-blue-500">
               <CiCirclePlus className="text-[150px] text-slate-400 duration-150 ease-in group-hover:text-blue-500" />
@@ -55,8 +55,7 @@ const NewsPageSection2 = () => {
                     {post.title}
                   </span>
                 </h3>
-                <div className="flex flex-col gap-2">
-                  <p className="text-slate-600">{post.content}</p>
+                <div className="flex flex-col">
                   <div className="flex flex-row items-center justify-between">
                     <div className="flex flex-row items-center justify-center gap-2">
                       <div className="aspect-square h-6 rounded-full bg-blue-500"></div>
