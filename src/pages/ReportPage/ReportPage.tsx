@@ -64,7 +64,7 @@ const ReportPage = () => {
       if (mapRef.current) {
         mapRef.current.flyTo({
           center: [viewport.longitude, viewport.latitude],
-          zoom: 12,
+          zoom: 13,
         });
       }
     } else {
@@ -192,9 +192,9 @@ const ReportPage = () => {
   };
 
   return (
-    <main className="relative flex h-0 grow flex-col pt-24">
-      <div className="flex h-0 w-screen grow">
-        <div className="w-0 grow">
+    <main className="relative flex h-[160vh] grow flex-col pt-24 md:h-0">
+      <div className="flex h-[160vh] max-h-full w-screen grow flex-col md:flex-row">
+        <div className="h-[60vh] w-full grow md:h-full md:w-0">
           <Map
             {...viewport}
             ref={(instance) => (mapRef.current = instance && instance.getMap())}
@@ -229,10 +229,10 @@ const ReportPage = () => {
             ))}
           </Map>
         </div>
-        <div className="h-full w-[500px] max-w-[500px] overflow-y-auto bg-gradient-to-b from-gray-100 to-gray-200 px-6 pb-10">
+        <div className="h-[100vh] w-[100vw] overflow-y-auto bg-gradient-to-b from-gray-50 to-gray-100 px-6 pb-10 pt-4 md:h-full md:w-[40%] md:max-w-[500px]">
           <div className="flex w-full flex-col items-start">
             <div className="flex w-full items-center justify-between py-2">
-              <h1 className="text-2xl font-bold">Report</h1>
+              <h1 className="text-xl font-bold sm:text-2xl">Report System</h1>
               <NavLink to="/reports/create">
                 <Button>Add</Button>
               </NavLink>
@@ -305,6 +305,11 @@ const ReportPage = () => {
                       </div>
                       {el._id === selectedReportId && (
                         <div className="text-sm font-light text-slate-700">
+                          <img
+                            src={el.imgUrl as string}
+                            alt=""
+                            className="h-[200px] w-full bg-slate-600/10 object-contain"
+                          />
                           <p className="px-2 py-1">Progress: {el.status}</p>
                           <p className="px-2 py-1">Shares: {el.totalshares}</p>
                           <p className="px-2 py-1">Upvotes: 0</p>
@@ -353,6 +358,10 @@ const ReportPage = () => {
                                 </Button>
                               </div>
                             )}
+
+                          <p className="py-2 text-center font-light text-slate-600">
+                            *Click again to close the detail*
+                          </p>
                         </div>
                       )}
                     </div>

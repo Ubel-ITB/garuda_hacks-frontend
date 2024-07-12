@@ -22,7 +22,7 @@ const ReportPageCreate: React.FC = () => {
   const [viewport, setViewport] = useState<ViewState>({
     latitude: -6.256754465448308, // Default latitude
     longitude: 106.61895122539383, // Default longitude
-    zoom: 12,
+    zoom: 13,
     bearing: 0,
     pitch: 0,
     padding: { top: 0, bottom: 0, left: 0, right: 0 },
@@ -45,18 +45,6 @@ const ReportPageCreate: React.FC = () => {
     UpvotedUserIds: [],
     DownVotedUserIds: [],
   });
-
-  const handleSetLocation = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      lat: viewport.latitude,
-      lng: viewport.longitude,
-    }));
-    Swal.fire({
-      title: "Location set successfully",
-      icon: "success",
-    });
-  };
 
   const handleInputChange = (
     event: React.ChangeEvent<
@@ -143,13 +131,21 @@ const ReportPageCreate: React.FC = () => {
         <div className="mb-5 mt-5 items-center justify-center px-4 text-center text-2xl font-bold text-black md:px-6">
           Report Page
         </div>
-        <div className="relative flex h-[70vh] w-full justify-center rounded-lg">
+        <div className="relative flex h-[50vh] w-full justify-center rounded-lg md:h-[60vh]">
           <Map
             {...viewport}
             style={{ width: "100%", height: "100%" }}
             mapStyle="mapbox://styles/mapbox/streets-v11"
             mapboxAccessToken={MAPBOX_TOKEN}
-            onMove={(evt) => setViewport(evt.viewState)}
+            onMove={(evt) => {
+              setViewport(evt.viewState);
+              const { latitude, longitude } = evt.viewState;
+              setFormData((prevData) => ({
+                ...prevData,
+                lat: latitude,
+                lng: longitude,
+              }));
+            }}
           >
             <NavigationControl position="top-left" />
             <Marker latitude={viewport.latitude} longitude={viewport.longitude}>
@@ -157,15 +153,7 @@ const ReportPageCreate: React.FC = () => {
             </Marker>
           </Map>
         </div>
-        <div className="mt-4 flex flex-col items-center justify-center">
-          <button
-            type="button"
-            onClick={handleSetLocation}
-            className="rounded bg-blue-500 px-4 py-2 text-white"
-          >
-            Set Location
-          </button>
-        </div>
+
         <div className="mt-6 flex flex-col gap-6 px-4 md:px-6">
           <InputImage
             onChange={handleFileChange}
