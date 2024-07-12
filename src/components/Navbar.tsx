@@ -32,7 +32,12 @@ const Navbar = () => {
     <header
       className={`fixed left-0 top-0 z-[100] flex w-screen items-center justify-between px-6 font-[500] duration-100 ease-in lg:px-24 ${className.navBarScrolled}`}
     >
-      <NavLink to="/">Nav Logo</NavLink>
+      <NavLink
+        to="/"
+        className="text-2xl font-bold tracking-wide text-blue-700"
+      >
+        NReport
+      </NavLink>
       <div className="flex gap-4">
         <nav className="hidden items-center justify-center gap-8 md:flex">
           <NavLink to="/" className="hover:text-blue-600">
