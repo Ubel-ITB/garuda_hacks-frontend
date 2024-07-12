@@ -40,7 +40,7 @@ const DetailsPage = () => {
           <div className="flex w-full items-center justify-between">
             <div className="flex flex-row items-center justify-center gap-2">
               <img
-                src={post.authorProfilePictureUrl}
+                src={post.authorProfilePicUrl}
                 className="aspect-square h-[40px] rounded-full"
                 alt="Author"
               />

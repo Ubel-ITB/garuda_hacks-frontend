@@ -40,19 +40,9 @@ const NewsPageSection2 = () => {
           <div hidden />
         )}
         {posts.map((post) => (
-          <NavLink
-            to={"/news/" + post._id}
-            key={post._id}
-            className="h-[400px]"
-          >
-            <NewsCard
-              imgUrl={post.imgUrl}
-              title={post.title}
-              authorProfilePicUrl={post.authorProfilePictureUrl as string}
-              categoryName={post.categoryName as string}
-              authorName={post.authorName as string}
-            />
-          </NavLink>
+          <div key={post._id} className="h-[400px]">
+            <NewsCard post={post} />
+          </div>
         ))}
       </div>
     </div>
