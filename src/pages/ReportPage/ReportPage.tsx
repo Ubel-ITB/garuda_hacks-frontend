@@ -18,6 +18,7 @@ import CustomAxios from "../../lib/actions/CustomAxios";
 import { handleFetchError } from "../../lib/actions/HandleError";
 import Swal from "sweetalert2";
 import { FaShareAlt } from "react-icons/fa";
+import { TiArrowRightThick } from "react-icons/ti";
 
 const ReportPage = () => {
   const navigate = useNavigate();
@@ -156,7 +157,9 @@ const ReportPage = () => {
           icon: "success",
         });
         navigate("/reports");
+        refetchReports();
       }
+      setIsModalOpen(false);
     } catch (error) {
       handleFetchError(error);
     }
@@ -204,7 +207,7 @@ const ReportPage = () => {
             onMove={(evt) => setViewport(evt.viewState)}
           >
             <NavigationControl position="top-left" />
-            {reports?.map((report) => (
+            {filteredReports?.map((report) => (
               <Marker
                 key={report._id}
                 latitude={report.lat}
@@ -282,7 +285,7 @@ const ReportPage = () => {
                     className={`flex w-full cursor-pointer items-center border-t-[1px] p-1 ${
                       selectedReportId === el._id
                         ? "bg-gray-200"
-                        : "hover:bg-gray-50"
+                        : "hover:bg-gray-300"
                     }`}
                   >
                     <div className="flex w-full grow flex-col items-start justify-start text-wrap">
@@ -297,33 +300,30 @@ const ReportPage = () => {
                           />
                           <p>{el.text}</p>
                         </div>
-                        <Button
-                          onClick={(event) => handleShareClick(el._id, event)}
-                        >
-                          <FaShareAlt />
-                        </Button>
                       </div>
                       {el._id === selectedReportId && (
-                        <div className="text-sm font-light text-slate-700">
-                          <img
-                            src={el.imgUrl as string}
-                            alt=""
-                            className="h-[200px] w-full bg-slate-600/10 object-contain"
-                          />
+                        <div className="flex w-full flex-col items-start text-sm font-light text-slate-700">
+                          <div className="w-full self-stretch">
+                            <img
+                              src={el.imgUrl as string}
+                              alt=""
+                              className="mx-auto h-[200px] self-stretch bg-slate-600/10 object-contain pb-2"
+                            />
+                          </div>
                           <p className="px-2 py-1">Progress: {el.status}</p>
-                          <p className="px-2 py-1">Shares: {el.totalshares}</p>
-                          <p className="px-2 py-1">Upvotes: 0</p>
-                          <p className="mb-5 px-2 py-1">Downvotes: 0</p>
                           {el.status !== "Reported" && (
                             <>
-                              <img
-                                src={el.progress.imgUrl}
-                                alt=""
-                                className="aspect-square h-auto w-full bg-slate-600/10 object-contain"
-                              />
-                              <p className="mt-5">
-                                Description: {el.progress.text}
-                              </p>
+                              {el.status === "On Progress" && (
+                                <p className="px-2">Work In Process...</p>
+                              )}
+                              <div className="w-full px-16 py-2">
+                                <img
+                                  src={el.progress.imgUrl}
+                                  alt=""
+                                  className="h-auto w-full bg-slate-600/10 object-contain"
+                                />
+                              </div>
+                              <p>Description: {el.progress.text}</p>
                             </>
                           )}
                           {(currentUserContext?.currentUser?.role ===
@@ -359,12 +359,63 @@ const ReportPage = () => {
                               </div>
                             )}
 
-                          <p className="py-2 text-center font-light text-slate-600">
+                          <p className="mx-auto py-2 text-center font-light text-slate-600">
                             *Click again to close the detail*
                           </p>
                         </div>
                       )}
                     </div>
+                    {el._id === selectedReportId && (
+                      <div className="flex w-fit max-w-fit flex-col items-center justify-start gap-6 self-stretch py-2 pr-2">
+                        <button
+                          className="flex flex-col items-center gap-1"
+                          onClick={(event) => handleShareClick(el._id, event)}
+                        >
+                          <FaShareAlt size={15} />
+                          <p className="text-xs">{el.totalshares}</p>
+                        </button>
+                        <div className="flex flex-col">
+                          <button
+                            className={`flex flex-col items-center justify-center gap-1 rounded-t-full border-[1px] ${el.UpvotedUserIds.includes(currentUserContext?.currentUser?._id as never) ? "border-blue-400 bg-blue-300 p-1 text-blue-600" : "border-blue-400 bg-blue-100 p-1 text-blue-600"}`}
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              await CustomAxios(
+                                "put",
+                                `/reports/${el._id}/vote/upVote`,
+                              );
+                              await refetchReports();
+                            }}
+                          >
+                            <TiArrowRightThick
+                              size={20}
+                              className="-rotate-90"
+                            />
+                            <p className="text-xs">
+                              {el.UpvotedUserIds.length}
+                            </p>
+                          </button>
+                          <button
+                            className={`flex flex-col items-center justify-center gap-1 rounded-b-full border-[1px] ${el.DownVotedUserIds.includes(currentUserContext?.currentUser?._id as never) ? "border-red-400 bg-red-300 p-1 text-red-600" : "border-red-400 bg-red-100 p-1 text-red-600"}`}
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              await CustomAxios(
+                                "put",
+                                `/reports/${el._id}/vote/downVote`,
+                              );
+                              await refetchReports();
+                            }}
+                          >
+                            <TiArrowRightThick
+                              size={20}
+                              className="rotate-90"
+                            />
+                            <p className="text-xs">
+                              {el.DownVotedUserIds.length}
+                            </p>
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

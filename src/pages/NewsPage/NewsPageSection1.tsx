@@ -33,7 +33,7 @@ const NewsPageSection1 = () => {
               <div className="absolute bottom-0 z-[1] h-[100px] w-full bg-gradient-to-t from-white via-white via-0% to-transparent"></div>
               <div className="absolute top-0 z-[1] h-[100px] w-full bg-gradient-to-b from-white via-white/80 via-80% to-transparent"></div>
               <img
-                className="absolute right-0 w-full object-cover"
+                className="absolute right-0 h-full w-full object-cover"
                 src={post?.imgUrl}
                 alt={post?.title}
               />
