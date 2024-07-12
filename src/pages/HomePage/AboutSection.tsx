@@ -1,19 +1,22 @@
 const className = {
-  p: "text-justify tracking-wide text-blue-700 text-wrap text-sm px-4 leading-relaxed",
-  h3: "text-xl font-bold text-blue-700 leading-relaxed",
+  p: "text-justify tracking-wide text-slate-800 text-wrap text-sm px-4 leading-relaxed",
+  h3: "text-xl font-bold text-blue-900 leading-relaxed",
 };
 export const AboutSection = () => {
   return (
     <section
       id="about"
-      className="mx-auto flex h-fit w-full max-w-[950px] flex-col items-center justify-center px-4 py-10"
+      className="mx-auto flex h-fit w-full max-w-[950px] flex-col items-center justify-center px-4 py-20"
     >
-      <h2 className="pb-[70px] text-3xl font-bold tracking-wide text-blue-700">
+      <h2 className="pb-[30px] text-3xl font-bold tracking-wide text-blue-700">
         About
       </h2>
-      <div className="flex w-full flex-col items-start gap-5 px-4">
-        <p className="text-wrap text-justify text-sm leading-relaxed tracking-wide text-blue-700">
-          Welcome to <strong className="animate-bounce text-xl">NReport</strong>
+      <div className="flex w-full flex-col items-start gap-5 px-4 text-slate-800">
+        <p className="text-wrap text-justify text-sm leading-relaxed tracking-wide">
+          Welcome to{" "}
+          <strong className="animate-bounce text-xl text-blue-700">
+            NReport
+          </strong>
           , your go-to platform for improving your neighborhood and city by
           reporting issues and staying informed about the latest local news.
         </p>
@@ -41,7 +44,9 @@ export const AboutSection = () => {
           <h3 className={className.h3}>What We Do</h3>
           <div className="flex flex-col gap-3">
             <div>
-              <h4 className="tracking-wide text-blue-700">Report Issues:</h4>
+              <h4 className="pb-1 tracking-wide text-slate-700">
+                Report Issues:
+              </h4>
               <p className={className.p}>
                 Whether it's a pothole, a broken streetlight, burning trash, or
                 any other concern, our platform allows you to quickly and easily
@@ -51,7 +56,9 @@ export const AboutSection = () => {
               </p>
             </div>
             <div>
-              <h4 className="tracking-wide text-blue-700">Stay Informed:</h4>
+              <h4 className="pb-1 pt-2 tracking-wide text-slate-700">
+                Stay Informed:
+              </h4>
               <p className={className.p}>
                 In addition to reporting issues, NReport keeps you updated with
                 the latest news and developments in your city. From community
