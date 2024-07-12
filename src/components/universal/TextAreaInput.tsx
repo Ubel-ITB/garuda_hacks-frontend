@@ -1,6 +1,8 @@
 import React from "react";
 
 const TextAreaInput = ({
+  value,
+  name,
   label,
   placeholder = "Enter your text here...",
   name,
@@ -9,13 +11,15 @@ const TextAreaInput = ({
   value,
   onChange,
 }: {
+  name: string;
+  value: string;
   label?: string;
   placeholder?: string;
-  name: string;
   rows?: number;
   cols?: number;
-  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  value: string;
+  onChange?: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
 }) => {
   return (
     <div className="mb-4">

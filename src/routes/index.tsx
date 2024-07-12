@@ -1,4 +1,4 @@
-import { Outlet, createBrowserRouter } from "react-router-dom";
+import { Outlet, createBrowserRouter, redirect } from "react-router-dom";
 import HomePage from "../pages/HomePage/HomePage";
 import Layout from "./Layout";
 import LoginPage from "../pages/LoginPage";
@@ -9,6 +9,8 @@ import { CurrentUserProvider } from "../lib/contexts/CurrentUserContext";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import ReportPageCreate from "../pages/ReportPage/ReportPageCreate";
 import ReportPage from "../pages/ReportPage/ReportPage";
+import CreateNewsPage from "../pages/NewsPage/CreateNewsPage.tsx/CreateNewsPage";
+import ProfilePageEdit from "../pages/ProfilePage/ProfileEdit";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +51,20 @@ const router = createBrowserRouter([
             path: "news",
             element: <NewsPage />,
           },
+          {
+            path: "news/create-post",
+            element: <CreateNewsPage />,
+          },
+        ],
+      },
+      {
+        path: "/create",
+        element: <Outlet />,
+        children: [
+          {
+            path: "news",
+            element: <CreateNewsPage />,
+          },
         ],
       },
       {
@@ -58,12 +74,22 @@ const router = createBrowserRouter([
         element: <Layout />,
         children: [
           {
+            path: "profile",
+            loader: () => {
+              return redirect("/");
+            },
+          },
+          {
             path: "profile/:username",
             element: <ProfilePage />,
           },
           {
             path: "reports/create",
             element: <ReportPageCreate />,
+          },
+          {
+            path: "profile/:username/edit",
+            element: <ProfilePageEdit />,
           },
         ],
       },

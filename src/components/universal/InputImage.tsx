@@ -7,6 +7,7 @@ interface InputImageProps {
   className?: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   file?: File | null;
+  initialImageUrl?: string;
 }
 
 const InputImage: React.FC<InputImageProps> = ({
@@ -14,9 +15,10 @@ const InputImage: React.FC<InputImageProps> = ({
   className,
   onChange,
   file,
+  initialImageUrl,
 }) => {
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex w-full flex-col items-center">
       <input
         type="file"
         name={name}
@@ -28,13 +30,13 @@ const InputImage: React.FC<InputImageProps> = ({
       <label
         htmlFor={name}
         className={twMerge(
-          "flex h-64 w-full cursor-pointer items-center justify-center border-2 border-dashed border-blue-400 bg-white p-2 text-gray-700 hover:bg-gray-50",
+          "flex h-64 w-full cursor-pointer items-center justify-center overflow-hidden border-2 border-dashed border-blue-400 bg-white p-2 text-gray-700 hover:bg-gray-50",
           className,
         )}
       >
-        {file ? (
+        {initialImageUrl || file ? (
           <img
-            src={URL.createObjectURL(file)}
+            src={file ? URL.createObjectURL(file) : initialImageUrl}
             alt="Selected"
             className="h-full w-full object-contain"
           />
