@@ -5,10 +5,8 @@ const TextAreaInput = ({
   name,
   label,
   placeholder = "Enter your text here...",
-  name,
   rows = 5,
   cols = 40,
-  value,
   onChange,
 }: {
   name: string;
