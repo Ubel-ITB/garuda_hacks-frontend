@@ -51,13 +51,13 @@ const LoginPage = () => {
         <h1 className="text-center text-2xl font-bold">Login</h1>
         <h2 className="text-center">Sign in or Login to your account here</h2>
         <InputText
-          value={formData.username}
+          value={formData.username as string}
           onChange={onChange}
           name="username"
           placeholder="Input your username here"
         />
         <InputPassword
-          value={formData.password}
+          value={formData.password as string}
           onChange={onChange}
           name="password"
           placeholder="Input your password here"
@@ -69,6 +69,12 @@ const LoginPage = () => {
             sign up
           </NavLink>
         </div>
+
+        <NavLink to="/" className="w-full">
+          <Button className="w-full bg-blue-200 text-blue-800 hover:bg-blue-300">
+            Continue As a Guest
+          </Button>
+        </NavLink>
       </form>
     </div>
   );
