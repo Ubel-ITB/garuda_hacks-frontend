@@ -38,9 +38,9 @@ const Navbar = () => {
           <NavLink to="/" className="hover:text-blue-600">
             Home
           </NavLink>
-          <NavLink to="/about" className="hover:text-blue-600">
+          {/* <NavLink to="/about" className="hover:text-blue-600">
             About
-          </NavLink>
+          </NavLink> */}
           <button className="group relative flex h-fit items-center gap-1">
             Pages{" "}
             <svg
@@ -57,7 +57,7 @@ const Navbar = () => {
               ></path>
             </svg>
             <div className="absolute bottom-0 right-0 h-0 translate-y-[100%] p-2 pt-4 opacity-0 group-hover:h-fit group-hover:opacity-100">
-              <div className="flex flex-col items-stretch rounded-lg bg-white p-2 text-start">
+              <div className="flex flex-col items-stretch rounded-lg border-[1px] bg-white p-2 text-start shadow-md">
                 <NavLink
                   to="/reports"
                   className="text-nowrap p-2 hover:text-blue-500"
@@ -78,7 +78,7 @@ const Navbar = () => {
           <button className="group relative rounded-full border-2 border-[#4a6cf7] px-6 py-1 hover:bg-[#93a9ff]">
             <p>{currentUserContext?.currentUser?.username?.split(" ")[0]}</p>
             <div className="absolute bottom-0 right-0 h-0 translate-y-[100%] p-2 pt-4 opacity-0 group-hover:h-fit group-hover:opacity-100">
-              <div className="flex flex-col items-stretch rounded-lg bg-white p-2 text-start">
+              <div className="flex flex-col items-stretch rounded-lg border-[1px] bg-white p-2 text-start shadow-md">
                 <NavLink
                   to={`/profile/${currentUserContext.currentUser.username}`}
                   className="text-nowrap p-1 pr-2 hover:text-blue-500"
@@ -122,13 +122,13 @@ const Navbar = () => {
           >
             Home
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/about"
             className="hover:text-blue-600"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             About
-          </NavLink>
+          </NavLink> */}
           <NavLink
             to="/reports"
             className="hover:text-blue-600"
