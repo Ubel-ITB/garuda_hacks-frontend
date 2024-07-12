@@ -6,11 +6,11 @@ import { FaRegNewspaper } from "react-icons/fa6";
 
 const HeroSection = () => {
   return (
-    <section className="relative h-[600px] w-full">
+    <section className="relative h-[70vh] min-h-[70vh] w-full">
       <SvgBottomLeft />
       <div className="relative flex h-full w-full flex-col items-center justify-center">
-        <div className="flex flex-col items-center py-4">
-          <h1 className="text-3xl font-bold tracking-wide text-blue-700">
+        <div className="flex flex-col items-center gap-2 py-4">
+          <h1 className="text-5xl font-bold tracking-wide text-blue-700">
             NReport
           </h1>
           <h2 className="text-blue-700">Neighbourhood Report</h2>

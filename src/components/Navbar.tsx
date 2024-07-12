@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { CurrentUserContext } from "../lib/contexts/CurrentUserContext";
 import { NavLink } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { twMerge } from "tailwind-merge";
 
 const Navbar = () => {
   const currentUserContext = useContext(CurrentUserContext);
@@ -20,7 +21,10 @@ const Navbar = () => {
   }, []);
 
   const className = {
-    navBarScrolled: isScrolled ? "h-16 backdrop-blur-md" : "h-24",
+    navBarScrolled: twMerge(
+      `${isScrolled ? "h-16 backdrop-blur-md bg-white/70 shadow-md" : "h-24"}`,
+      ` ${isMobileMenuOpen && "bg-white"}`,
+    ),
     buttonScrolled: isScrolled ? "py-2" : "py-4",
   };
 
@@ -52,17 +56,17 @@ const Navbar = () => {
                 fill="black"
               ></path>
             </svg>
-            <div className="absolute bottom-0 right-0 h-0 translate-y-[100%] p-2 opacity-0 group-hover:h-fit group-hover:opacity-100">
+            <div className="absolute bottom-0 right-0 h-0 translate-y-[100%] p-2 pt-4 opacity-0 group-hover:h-fit group-hover:opacity-100">
               <div className="flex flex-col items-stretch rounded-lg bg-white p-2 text-start">
                 <NavLink
                   to="/reports"
-                  className="text-nowrap p-1 pr-2 hover:text-blue-500"
+                  className="text-nowrap p-2 hover:text-blue-500"
                 >
                   Reports Page
                 </NavLink>
                 <NavLink
                   to="/news"
-                  className="text-nowrap p-1 hover:text-blue-500"
+                  className="text-nowrap p-2 hover:text-blue-500"
                 >
                   News Page
                 </NavLink>
@@ -73,7 +77,7 @@ const Navbar = () => {
         {currentUserContext?.currentUser?.username ? (
           <button className="group relative rounded-full border-2 border-[#4a6cf7] px-6 py-1 hover:bg-[#93a9ff]">
             <p>{currentUserContext?.currentUser?.username?.split(" ")[0]}</p>
-            <div className="absolute bottom-0 right-0 h-0 translate-y-[100%] p-2 opacity-0 group-hover:h-fit group-hover:opacity-100">
+            <div className="absolute bottom-0 right-0 h-0 translate-y-[100%] p-2 pt-4 opacity-0 group-hover:h-fit group-hover:opacity-100">
               <div className="flex flex-col items-stretch rounded-lg bg-white p-2 text-start">
                 <NavLink
                   to={`/profile/${currentUserContext.currentUser.username}`}
@@ -100,7 +104,7 @@ const Navbar = () => {
             </NavLink>
           </div>
         )}
-        <div className="flex h-full items-center justify-center">
+        <div className="flex h-full items-center justify-center md:hidden">
           <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
             <RxHamburgerMenu size={35} />
           </button>
@@ -108,7 +112,7 @@ const Navbar = () => {
       </div>
 
       <div
-        className={`fixed left-0 top-0 z-50 h-screen w-full bg-white p-6 transition-transform duration-300 ${isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"} md:hidden`}
+        className={`fixed left-0 top-0 z-50 min-h-screen w-screen bg-white p-6 transition-transform duration-300 ${!isMobileMenuOpen ? "-translate-y-[100%]" : isScrolled ? "translate-y-16" : "translate-y-24"} md:hidden`}
       >
         <nav className="flex flex-col items-center gap-6">
           <NavLink
