@@ -54,7 +54,7 @@ const NewsPageSection1 = () => {
                     >
                       <img
                         src={post?.authorProfilePicUrl}
-                        className="aspect-square h-6 rounded-full"
+                        className="aspect-square h-6 w-auto rounded-full object-cover"
                       />
                       <span className="text-sm text-slate-700">
                         {post?.authorName}

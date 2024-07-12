@@ -45,7 +45,7 @@ const NewsCard = ({ isSmall, post }: { isSmall?: boolean; post?: IPost }) => {
                 {post.authorProfilePicUrl && (
                   <img
                     src={post.authorProfilePicUrl}
-                    className="aspect-square h-6 rounded-full"
+                    className="aspect-square h-6 w-auto rounded-full object-cover"
                   />
                 )}
                 <span className="text-sm text-slate-700">
