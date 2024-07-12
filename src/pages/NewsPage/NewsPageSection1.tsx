@@ -12,6 +12,7 @@ const NewsPageSection1 = () => {
   const { response, error, loading } = useFetch<IPost[]>({
     url: "/posts",
   });
+  //const navigate=useNavigate()
 
   useEffect(() => {
     if (response) {
@@ -48,8 +49,11 @@ const NewsPageSection1 = () => {
                 <div className="flex flex-col">
                   <div className="flex flex-row items-center justify-between gap-2">
                     <div className="flex flex-row items-center justify-center gap-2">
-                      <div className="aspect-square h-6 rounded-full bg-blue-500"></div>
-                      <span className="text-sm text-blue-800">
+                      <img
+                        src={post.authorProfilePictureUrl}
+                        className="aspect-square h-6 rounded-full"
+                      />
+                      <span className="text-sm text-slate-700">
                         {post.authorName}
                       </span>
                     </div>

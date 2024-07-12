@@ -10,6 +10,8 @@ import { CurrentUserProvider } from "../lib/contexts/CurrentUserContext";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import CreateNewsPage from "../pages/NewsPage/CreateNewsPage.tsx/CreateNewsPage";
 import ProfilePageEdit from "../pages/ProfilePage/ProfileEdit";
+import DetailsPage from "../pages/NewsPage/DetailsPage/DetailsPage";
+import AllNewsPage from "../pages/NewsPage/AllNewsPage.tsx/AllNewsPage";
 
 const router = createBrowserRouter([
   {
@@ -51,8 +53,12 @@ const router = createBrowserRouter([
             element: <NewsPage />,
           },
           {
-            path: "news/create-post",
-            element: <CreateNewsPage />,
+            path: "news/:postId",
+            element: <DetailsPage />,
+          },
+          {
+            path: "news/all-news",
+            element: <AllNewsPage />,
           },
         ],
       },
