@@ -25,7 +25,7 @@ const ReportPage = () => {
   const [viewport, setViewport] = useState<ViewState>({
     latitude: -6.256754465448308, // Default latitude
     longitude: 106.61895122539383, // Default longitude
-    zoom: 12,
+    zoom: 15,
     bearing: 0,
     pitch: 0,
     padding: { top: 0, bottom: 0, left: 0, right: 0 },

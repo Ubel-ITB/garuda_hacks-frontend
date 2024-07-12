@@ -1,7 +1,6 @@
 import { useState } from "react";
 import CustomAxios from "../../../lib/actions/CustomAxios";
 import { INewsForm } from "../../../lib/types/NewsForm";
-import TextAreaInput from "../../../components/universal/TextAreaInput";
 import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import InputText from "../../../components/universal/InputText";
@@ -10,6 +9,8 @@ import useFetch from "../../../lib/CustomHooks/useFetch";
 import { IPostCategory } from "../../../lib/types/PostCategory";
 import CreatableSelect from "react-select/creatable";
 import Button from "../../../components/universal/Button";
+import { Editor } from "@tinymce/tinymce-react";
+import { TINYMCE_TOKEN } from "../../../lib/constant";
 
 const CreateNewsPage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -40,6 +41,13 @@ const CreateNewsPage = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
+    }));
+  };
+
+  const handleEditorChange = (content: string) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      content,
     }));
   };
 
@@ -117,12 +125,23 @@ const CreateNewsPage = () => {
             >
               Content
             </label>
-            <TextAreaInput
-              name="content"
-              placeholder="content"
-              rows={10}
+            <Editor
+              apiKey={TINYMCE_TOKEN} // Replace with your TinyMCE API key if you have one
               value={formData.content}
-              onChange={onChange}
+              init={{
+                height: 500,
+                menubar: false,
+                plugins: [
+                  "advlist autolink lists link image charmap print preview anchor",
+                  "searchreplace visualblocks code fullscreen",
+                  "insertdatetime media table paste code help wordcount",
+                ],
+                toolbar:
+                  "undo redo | formatselect | bold italic backcolor | \
+                  alignleft aligncenter alignright alignjustify | \
+                  bullist numlist outdent indent | removeformat | help",
+              }}
+              onEditorChange={handleEditorChange}
             />
           </div>
           <div className="flex flex-col py-4">

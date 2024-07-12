@@ -35,7 +35,7 @@ const DetailsPage = () => {
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       {post && (
-        <div className="flex w-full max-w-[700px] flex-col gap-4 px-4">
+        <div className="flex w-full max-w-[900px] flex-col gap-4 px-4">
           <h1 className="text-[50px] font-bold text-blue-800">{post.title}</h1>
           <div className="flex w-full items-center justify-between">
             <div className="flex flex-row items-center justify-center gap-2">
@@ -62,9 +62,11 @@ const DetailsPage = () => {
             src={post.imgUrl}
             alt={post.title}
           />
-          <p className="text-justify tracking-wide text-slate-700">
-            {post.content}
-          </p>
+
+          <div
+            dangerouslySetInnerHTML={{ __html: post.content }}
+            className="text-black"
+          ></div>
         </div>
       )}
     </div>

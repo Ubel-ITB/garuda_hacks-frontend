@@ -3,25 +3,48 @@ import useFetch from "../../lib/CustomHooks/useFetch";
 import { IUser } from "../../lib/types/User";
 import { FaShareAlt } from "react-icons/fa";
 import Breadcrumb from "../../components/universal/BreadCrumb";
+import Swal from "sweetalert2";
+import { useContext } from "react";
+import { CurrentUserContext } from "../../lib/contexts/CurrentUserContext";
 
 const ProfilePage = () => {
+  const currentUserContext = useContext(CurrentUserContext);
   const { username } = useParams();
   const { response: userProfile } = useFetch<IUser>({
     url: `/profile/${username}`,
   });
 
-  const isUserOwner = userProfile?.username === username;
+  const isUserOwner = username === currentUserContext?.currentUser?.username;
+
+  const handleShareClick = () => {
+    const profileUrl = window.location.href;
+    navigator.clipboard
+      .writeText(profileUrl)
+      .then(() => {
+        Swal.fire({
+          title: "Successfully Copied To Clipboard",
+          icon: "success",
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to copy URL: ", err);
+      });
+  };
 
   return (
     <main className="relative w-full grow pt-24">
       <div className="flex h-fit min-h-full w-full flex-col items-center justify-center gap-8">
         <Breadcrumb className="max-w-[1000px] px-4" />
         <div className="aspect-square h-auto w-64 overflow-hidden rounded-full border-2 bg-gray-50">
-          <img src={userProfile?.profilePicUrl} alt="" />
+          <img
+            src={userProfile?.profilePicUrl}
+            alt=""
+            className="h-full w-full object-cover object-center"
+          />
         </div>
         <div className="mx-auto flex w-full max-w-[1000px] flex-col items-center px-2">
           <h1 className="text-2xl">{userProfile?.displayName}</h1>
-          <div className="flex items-center gap-2">
+          <div className="pt- flex items-center gap-3">
             {isUserOwner && (
               <NavLink
                 to={`/profile/${username}/edit`}
@@ -30,7 +53,10 @@ const ProfilePage = () => {
                 Edit
               </NavLink>
             )}
-            <button className="flex items-center gap-2 rounded-md bg-blue-200 p-2 text-blue-700 hover:bg-blue-300">
+            <button
+              className="+hover:bg-blue-300 flex items-center gap-2 rounded-md bg-blue-200 p-2 text-blue-700"
+              onClick={handleShareClick}
+            >
               <FaShareAlt size={25} />
               Share
             </button>
