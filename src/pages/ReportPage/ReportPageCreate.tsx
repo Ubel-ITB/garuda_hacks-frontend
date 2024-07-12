@@ -11,8 +11,10 @@ import InputImage from "../../components/universal/InputImage";
 import { IReportForm } from "../../lib/types/Report";
 import { MAPBOX_TOKEN } from "../../lib/constant";
 import useFetch from "../../lib/CustomHooks/useFetch";
+import Swal from "sweetalert2";
 
 const ReportPageCreate: React.FC = () => {
+  //const navigate = useNavigate();
   const navigate = useNavigate();
   const { response: categories } = useFetch<IReportCategory[]>({
     url: "/categories",
@@ -29,19 +31,22 @@ const ReportPageCreate: React.FC = () => {
     address: "",
     text: "",
     imgUrl: null,
-    location: {
-      lat: -6.256754465448308,
-      lng: 106.61895122539383,
-    },
+    lat: -6.256754465448308,
+    lng: 106.61895122539383,
     selectedFile: null,
-    selectedCategory: "",
+    CategoryID: "",
   });
 
   const handleSetLocation = () => {
     setFormData((prevData) => ({
       ...prevData,
-      location: { lat: viewport.latitude, lng: viewport.longitude },
+      lat: viewport.latitude,
+      lng: viewport.longitude,
     }));
+    Swal.fire({
+      title: "Location set successfully",
+      icon: "success",
+    });
   };
 
   const handleInputChange = (
@@ -56,20 +61,65 @@ const ReportPageCreate: React.FC = () => {
     }));
   };
 
+  const handleCategoryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const { value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      CategoryID: value,
+    }));
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.length) {
-      setFormData((prevData) => ({
-        ...prevData,
-        selectedFile: event.target.files?.length ? event.target.files[0] : null,
-      }));
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prevData) => ({
+          ...prevData,
+          selectedFile: file,
+          imgUrl: reader.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
+      let imgUrl = formData.imgUrl;
 
-      console.log({ formData });
+      if (formData.selectedFile) {
+        const fd = new FormData();
+        fd.append("file", formData.selectedFile);
+        const imgResponse = await CustomAxios(
+          "post",
+          "/uploads/posts/coverImage",
+          fd,
+        );
+        console.log(imgResponse);
+        imgUrl = imgResponse.data.url;
+      }
+
+      const dataToSubmit = {
+        ...formData,
+        location: { lat: viewport.latitude, lng: viewport.longitude },
+        imgUrl,
+      };
+
+      const result = await CustomAxios("post", "/reports/", dataToSubmit);
+
+      if (result) {
+        Swal.fire({
+          title: "Reported successfully",
+          icon: "success",
+        });
+        navigate("/reports");
+      }
+      console.log("Post created successfully", result.data);
+      console.log({ dataToSubmit });
     } catch (error) {
       handleFetchError(error);
     }
@@ -100,6 +150,7 @@ const ReportPageCreate: React.FC = () => {
         </div>
         <div className="mt-4 flex flex-col items-center justify-center">
           <button
+            type="button"
             onClick={handleSetLocation}
             className="rounded bg-blue-500 px-4 py-2 text-white"
           >
@@ -136,9 +187,9 @@ const ReportPageCreate: React.FC = () => {
             </label>
             <select
               id="category"
-              name="category"
-              value={formData.selectedCategory}
-              onChange={handleInputChange}
+              name="selectedCategory"
+              value={formData.CategoryID}
+              onChange={handleCategoryChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             >
               <option value="" disabled>
