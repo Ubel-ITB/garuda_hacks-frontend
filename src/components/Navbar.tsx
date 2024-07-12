@@ -58,6 +58,13 @@ const Navbar = () => {
           >
             Main Features
           </NavHashLink>
+          <NavHashLink
+            to="/#about"
+            smooth
+            className="cursor-pointer hover:text-blue-600"
+          >
+            About
+          </NavHashLink>
           {/* <NavLink to="/about" className="hover:text-blue-600">
             About
           </NavLink> */}
@@ -149,15 +156,16 @@ const Navbar = () => {
           >
             Home
           </NavHashLink>
-          {/* <NavLink
-            to="/about"
-            className="hover:text-blue-600"
+          <NavHashLink
+            to="features"
+            smooth={true}
+            className="cursor-pointer hover:text-blue-600"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            About
-          </NavLink> */}
+            Main Features
+          </NavHashLink>
           <NavHashLink
-            to="features-section"
+            to="about"
             smooth={true}
             className="cursor-pointer hover:text-blue-600"
             onClick={() => setIsMobileMenuOpen(false)}

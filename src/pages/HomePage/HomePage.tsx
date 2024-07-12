@@ -1,3 +1,4 @@
+import { AboutSection } from "./AboutSection";
 import FeaturesSection from "./FeaturesSection";
 import HeroSection from "./HeroSection";
 import SvgTopRight from "./SvgTopRight";
@@ -8,6 +9,7 @@ const HomePage = () => {
       <SvgTopRight />
       <HeroSection />
       <FeaturesSection />
+      <AboutSection />
     </div>
   );
 };
