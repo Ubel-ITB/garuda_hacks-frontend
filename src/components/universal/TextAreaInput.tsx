@@ -28,8 +28,8 @@ const TextAreaInput = ({
       )}
       <textarea
         className="focus:shadow-outline w-full rounded-lg border px-3 py-2 text-gray-700 focus:outline-none"
-        placeholder={placeholder}
         name={name}
+        placeholder={placeholder}
         rows={rows}
         cols={cols}
         value={value}

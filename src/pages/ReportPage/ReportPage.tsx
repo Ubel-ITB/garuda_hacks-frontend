@@ -1,160 +1,243 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useRef, useContext } from "react";
 import Map, { NavigationControl, Marker, ViewState } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useNavigate } from "react-router-dom";
-import TextAreaInput from "../../components/universal/TextAreaInput";
-import CustomAxios from "../../lib/actions/CustomAxios";
-import { handleFetchError } from "../../lib/actions/HandleError";
+import { NavLink } from "react-router-dom";
 import { IReportCategory } from "../../lib/types/ReportCategory";
+import { IReport, IReportProgressForm } from "../../lib/types/Report";
+import { MAPBOX_TOKEN } from "../../lib/constant";
+import useFetch from "../../lib/CustomHooks/useFetch";
+import Button from "../../components/universal/Button";
+import Modal from "../../components/universal/Modal"; // Import the Modal component
+import { IoLocation } from "react-icons/io5";
+import { twMerge } from "tailwind-merge";
 import { CurrentUserContext } from "../../lib/contexts/CurrentUserContext";
+import InputImage from "../../components/universal/InputImage";
+import TextAreaInput from "../../components/universal/TextAreaInput";
 
-const MAPBOX_TOKEN =
-  "pk.eyJ1IjoibWluZ3lhbjIxNCIsImEiOiJja2h4Y2xiajAwMTBsMnZuNHBzMjVmYjlsIn0.w7Wxvvi2i4olHVL2gE1zkQ"; // Add your Mapbox token here
-
-const ReportPage: React.FC = () => {
-  const navigate = useNavigate();
+const ReportPage = () => {
   const currentUserContext = useContext(CurrentUserContext);
-  const [categories, setCategories] = useState<IReportCategory[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const { data } = await CustomAxios("get", "/categories");
-        setCategories(data);
-      } catch (error) {
-        handleFetchError(error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
+  const { response: reports } = useFetch<IReport[]>({
+    url: "/reports",
+  });
+  const { response: categories } = useFetch<IReportCategory[]>({
+    url: "/categories",
+  });
   const [viewport, setViewport] = useState<ViewState>({
-    latitude: -6.121435, // Default latitude
-    longitude: 106.774124, // Default longitude
+    latitude: -6.256754465448308, // Default latitude
+    longitude: 106.61895122539383, // Default longitude
     zoom: 12,
     bearing: 0,
     pitch: 0,
     padding: { top: 0, bottom: 0, left: 0, right: 0 },
   });
+  const [filterCategoryId, setFilterCategoryId] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [formData, setFormData] = useState<IReportProgressForm>({
+    imgUrl: "",
+    text: "",
+  });
 
-  const [address, setAddress] = useState("");
-  const [text, setText] = useState("");
-  const [imgUrl, setImgUrl] = useState<string | null>(null);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
 
-  const handleSetLocation = () => {
-    alert(`Latitude: ${viewport.latitude}, Longitude: ${viewport.longitude}`);
-  };
+  const filteredReports = selectedReportId
+    ? reports?.filter((el) => el._id === selectedReportId)
+    : !filterCategoryId && !filterStatus
+      ? reports
+      : reports?.filter(
+          (el) =>
+            (!filterCategoryId || el.CategoryId === filterCategoryId) &&
+            (!filterStatus || el.status === filterStatus),
+        );
 
-  const handleAddressChange = (value: string) => {
-    setAddress(value);
-  };
-
-  const handleTextChange = (value: string) => {
-    setText(value);
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImgUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+  const handleSingleClick = (reportId: string) => {
+    if (reportId === selectedReportId) {
+      setSelectedReportId(null);
+      if (mapRef.current) {
+        mapRef.current.flyTo({
+          center: [viewport.longitude, viewport.latitude],
+          zoom: 12,
+        });
+      }
+    } else {
+      setSelectedReportId(reportId);
+      const selectedReport = reports?.find((report) => report._id === reportId);
+      if (selectedReport && mapRef.current) {
+        mapRef.current.flyTo({
+          center: [selectedReport.lng, selectedReport.lat],
+          zoom: 15,
+        });
+      }
     }
   };
 
-  const handleCategoryChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    setSelectedCategory(event.target.value);
+  const handleModalOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files?.length) {
+      const file = event.target.files[0];
+      setFile(file);
+    }
   };
 
   return (
-    <div className="relative grow pt-24">
-      <div className="mx-auto h-fit w-[80%] items-center justify-center rounded-lg border border-black bg-blue-200 p-6">
-        <div className="mb-5 mt-5 items-center justify-center text-center font-serif text-2xl font-bold text-black">
-          Report Page
-        </div>
-        <div className="relative flex h-[500px] w-full justify-center rounded-lg p-4">
+    <main className="relative flex h-fit grow flex-col pt-24">
+      <div className="flex h-0 w-screen grow">
+        <div className="w-0 grow">
           <Map
             {...viewport}
+            ref={(instance) => (mapRef.current = instance && instance.getMap())}
             style={{ width: "100%", height: "100%" }}
             mapStyle="mapbox://styles/mapbox/streets-v11"
             mapboxAccessToken={MAPBOX_TOKEN}
             onMove={(evt) => setViewport(evt.viewState)}
           >
             <NavigationControl position="top-left" />
-            <Marker latitude={viewport.latitude} longitude={viewport.longitude}>
-              <div className="h-4 w-4 rounded-full border-2 border-white bg-red-500"></div>
-            </Marker>
+            {reports?.map((report) => (
+              <Marker
+                key={report._id}
+                latitude={report.lat}
+                longitude={report.lng}
+                onClick={() => handleSingleClick(report._id)}
+              >
+                <IoLocation
+                  color={selectedReportId === report._id ? "blue" : "red"}
+                  className="h-auto w-8"
+                />
+              </Marker>
+            ))}
           </Map>
         </div>
-        <div className="mt-4 flex justify-center">
-          <button
-            onClick={handleSetLocation}
-            className="rounded bg-blue-500 px-4 py-2 text-white"
-          >
-            Set Location
-          </button>
-        </div>
-        <div className="mt-6">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="mb-4 block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
-          />
-          {imgUrl && (
-            <div className="mb-4">
-              <img
-                src={imgUrl}
-                alt="Uploaded"
-                className="h-auto max-w-full rounded-lg"
-              />
+        <div className="w-fit min-w-[300px] px-6">
+          <div className="flex flex-col items-start">
+            <div className="flex w-full items-center justify-between py-2">
+              <h1 className="text-2xl font-bold">Report</h1>
+              <NavLink to="/reports/create">
+                <Button>Add</Button>
+              </NavLink>
             </div>
-          )}
-          <TextAreaInput
-            label="Address"
-            placeholder="Enter the address here..."
-            rows={2}
-            onChange={handleAddressChange}
-          />
-          <TextAreaInput
-            label="Description"
-            placeholder="Enter the description here..."
-            rows={4}
-            onChange={handleTextChange}
-          />
-          <div className="mt-4">
-            <label
-              htmlFor="category"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Category
-            </label>
-            <select
-              id="category"
-              name="category"
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            >
-              <option value="" disabled>
-                Select a category
-              </option>
-              {categories.map((category) => (
-                <option key={category._id} value={category._id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+
+            <section className="w-full py-2">
+              <h2>Filter By Categories</h2>
+              <select
+                onChange={(e) => setFilterCategoryId(e.target.value)}
+                className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              >
+                <option value="">All</option>
+                {categories?.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </section>
+
+            <section className="w-full py-2">
+              <h2>Filter By Status</h2>
+              <select
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              >
+                <option value="">All</option>
+                <option value="Reported">Reported</option>
+                <option value="On Progress">On Progress</option>
+                <option value="Finished">Finished</option>
+              </select>
+            </section>
+
+            <section className="w-full py-2 pt-6">
+              <h2 className="text-2xl">Reports</h2>
+              <div className="flex w-full flex-col items-stretch py-1">
+                {filteredReports?.map((el) => (
+                  <div
+                    key={el._id}
+                    onClick={() => handleSingleClick(el._id)}
+                    className={`flex w-full cursor-pointer items-center border-t-[1px] p-1 ${
+                      selectedReportId === el._id
+                        ? "bg-gray-200"
+                        : "hover:bg-gray-50"
+                    }`}
+                  >
+                    <div className="flex h-full w-8 justify-center self-start p-2">
+                      <div
+                        className={twMerge(
+                          `aspect-square h-auto w-4 rounded-full ${(el.status === "Reported" || !el.status) && "bg-red-700"}`,
+                          `${el.status === "On Progress" && "bg-orange-700"}`,
+                          `${el.status === "Finished" && "bg-green-700"}`,
+                        )}
+                      />
+                    </div>
+                    <div className="flex grow flex-col">
+                      <p>{el.text}</p>
+                      {el._id === selectedReportId && (
+                        <div className="text-sm font-light text-slate-700">
+                          <p>Progress: {el.status}</p>
+                          <p>Shares: {el.totalshares}</p>
+                          <p>Upvotes: 0</p>
+                          <p>Downvotes: 0</p>
+                          {el.status !== "Reported" && (
+                            <>
+                              <p>{el.progress.text}</p>
+                              <p>{el.progress.imgUrl}</p>
+                            </>
+                          )}
+                          {(currentUserContext?.currentUser?.role ===
+                            "officer" ||
+                            currentUserContext?.currentUser?.role ===
+                              "admin") && (
+                            <Button
+                              className="mt-2 w-fit py-1"
+                              onClick={handleModalOpen}
+                            >
+                              Process
+                            </Button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
           </div>
         </div>
       </div>
-    </div>
+      <Modal isOpen={isModalOpen} onClose={handleModalClose}>
+        <h2 className="text-2xl">Process this Report/issue</h2>
+        <form action="" method="post">
+          <div className="py-4">
+            <label htmlFor="file" className="h-fit">
+              Progress Image
+            </label>
+            <InputImage file={file} onChange={handleFileChange} />
+          </div>
+          <div className="py-4">
+            <label htmlFor="text" className="h-fit">
+              Brief Explanation
+            </label>
+            <TextAreaInput
+              name="text"
+              value={formData.imgUrl}
+              onChange={(e) => {
+                setFormData((prevData) => ({
+                  ...prevData,
+                  text: e.target.value,
+                }));
+              }}
+            />
+          </div>
+        </form>
+      </Modal>
+    </main>
   );
 };
 

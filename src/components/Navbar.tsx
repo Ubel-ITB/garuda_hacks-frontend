@@ -69,7 +69,7 @@ const Navbar = () => {
               ></path>
             </svg>
             <div className="absolute bottom-0 right-0 h-0 translate-y-[100%] p-2 pt-4 opacity-0 group-hover:h-fit group-hover:opacity-100">
-              <div className="flex flex-col items-stretch rounded-lg border-[1px] bg-white p-2 text-start shadow-md">
+              <div className="hidden flex-col items-stretch rounded-lg border-[1px] bg-white p-2 text-start shadow-md group-hover:flex">
                 <NavLink
                   to="/reports"
                   className="text-nowrap p-2 hover:text-blue-500"
@@ -90,7 +90,7 @@ const Navbar = () => {
           <div className="group relative rounded-full border-2 border-[#4a6cf7] px-6 py-1 hover:bg-[#93a9ff]">
             <p>{currentUserContext?.currentUser?.username?.split(" ")[0]}</p>
             <div className="absolute bottom-0 right-0 h-0 translate-y-[100%] p-2 pt-4 opacity-0 group-hover:h-fit group-hover:opacity-100">
-              <div className="flex flex-col items-stretch rounded-lg border-[1px] bg-white p-2 text-start shadow-md">
+              <div className="hidden flex-col items-stretch rounded-lg border-[1px] bg-white p-2 text-start shadow-md group-hover:flex">
                 <NavLink
                   to={`/profile/${currentUserContext.currentUser.username}`}
                   className="text-nowrap p-1 pr-2 hover:text-blue-500"

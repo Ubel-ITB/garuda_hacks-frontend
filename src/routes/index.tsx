@@ -4,10 +4,11 @@ import Layout from "./Layout";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import IsLoggedIn from "./loaders/IsLoggedIn";
-import ReportPage from "../pages/ReportPage/ReportPage";
 import NewsPage from "../pages/NewsPage/NewsPage";
 import { CurrentUserProvider } from "../lib/contexts/CurrentUserContext";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
+import ReportPageCreate from "../pages/ReportPage/ReportPageCreate";
+import ReportPage from "../pages/ReportPage/ReportPage";
 import CreateNewsPage from "../pages/NewsPage/CreateNewsPage.tsx/CreateNewsPage";
 import ProfilePageEdit from "../pages/ProfilePage/ProfileEdit";
 import DetailsPage from "../pages/NewsPage/DetailsPage/DetailsPage";
@@ -87,6 +88,10 @@ const router = createBrowserRouter([
           {
             path: "profile/:username",
             element: <ProfilePage />,
+          },
+          {
+            path: "reports/create",
+            element: <ReportPageCreate />,
           },
           {
             path: "profile/:username/edit",
