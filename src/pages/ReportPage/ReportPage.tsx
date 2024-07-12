@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useRef, useContext } from "react";
 import Map, { NavigationControl, Marker, ViewState } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { IReportCategory } from "../../lib/types/ReportCategory";
 import { IReport, IReportProgressForm } from "../../lib/types/Report";
 import { MAPBOX_TOKEN } from "../../lib/constant";
@@ -13,8 +14,12 @@ import { twMerge } from "tailwind-merge";
 import { CurrentUserContext } from "../../lib/contexts/CurrentUserContext";
 import InputImage from "../../components/universal/InputImage";
 import TextAreaInput from "../../components/universal/TextAreaInput";
+import CustomAxios from "../../lib/actions/CustomAxios";
+import { handleFetchError } from "../../lib/actions/HandleError";
+import Swal from "sweetalert2";
 
 const ReportPage = () => {
+  const navigate = useNavigate();
   const currentUserContext = useContext(CurrentUserContext);
   const { response: reports } = useFetch<IReport[]>({
     url: "/reports",
@@ -36,8 +41,8 @@ const ReportPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<IReportProgressForm>({
-    imgUrl: "",
     text: "",
+    imgUrl: "",
   });
 
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -72,6 +77,15 @@ const ReportPage = () => {
       }
     }
   };
+  const onChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
 
   const handleModalOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -82,6 +96,71 @@ const ReportPage = () => {
     setIsModalOpen(false);
   };
 
+  const handleFinish = async () => {
+    const updateData = {
+      ...formData,
+    };
+
+    console.log(updateData);
+    const response = await Swal.fire({
+      title: "Are you sure to mark this done?",
+      icon: "info",
+      showCancelButton: true,
+    });
+
+    if (response.isConfirmed) {
+      const { data } = await CustomAxios(
+        "put",
+        `/reports/${selectedReportId}/complete`,
+        updateData,
+      );
+
+      if (data) {
+        Swal.fire({
+          title: "Finished successfully",
+          icon: "success",
+        });
+        navigate("/reports");
+      }
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const updateData = {
+        ...formData,
+      };
+
+      if (file) {
+        const fd = new FormData();
+        fd.append("file", file);
+        const { data } = await CustomAxios(
+          "post",
+          `/uploads/progressPic/${currentUserContext?.currentUser?.username}`,
+          fd,
+        );
+        updateData.imgUrl = data.url;
+      }
+
+      const result = await CustomAxios(
+        "put",
+        `/reports/${selectedReportId}`,
+        updateData,
+      );
+
+      if (result) {
+        Swal.fire({
+          title: "Reported successfully",
+          icon: "success",
+        });
+        navigate("/reports");
+      }
+    } catch (error) {
+      handleFetchError(error);
+    }
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.length) {
       const file = event.target.files[0];
@@ -90,7 +169,7 @@ const ReportPage = () => {
   };
 
   return (
-    <main className="relative flex h-fit grow flex-col pt-24">
+    <main className="relative flex h-0 grow flex-col pt-24">
       <div className="flex h-0 w-screen grow">
         <div className="w-0 grow">
           <Map
@@ -110,14 +189,18 @@ const ReportPage = () => {
                 onClick={() => handleSingleClick(report._id)}
               >
                 <IoLocation
-                  color={selectedReportId === report._id ? "blue" : "red"}
+                  color={
+                    selectedReportId === report._id
+                      ? "blue"
+                      : `${report.status === "Reported" || !report.status ? "red" : ""}${report.status === "On Progress" ? "#FFBF00" : ""}${report.status === "Finished" ? "green" : ""}`
+                  }
                   className="h-auto w-8"
                 />
               </Marker>
             ))}
           </Map>
         </div>
-        <div className="w-fit min-w-[300px] px-6">
+        <div className="h-full w-[300px] max-w-[300px] overflow-y-auto bg-gradient-to-b from-gray-100 to-gray-200 px-6 pb-10">
           <div className="flex flex-col items-start">
             <div className="flex w-full items-center justify-between py-2">
               <h1 className="text-2xl font-bold">Report</h1>
@@ -129,7 +212,12 @@ const ReportPage = () => {
             <section className="w-full py-2">
               <h2>Filter By Categories</h2>
               <select
-                onChange={(e) => setFilterCategoryId(e.target.value)}
+                onChange={(e) => {
+                  setFilterStatus("");
+                  setFilterCategoryId(e.target.value);
+                  setSelectedReportId("");
+                }}
+                value={filterCategoryId}
                 className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               >
                 <option value="">All</option>
@@ -145,6 +233,7 @@ const ReportPage = () => {
               <h2>Filter By Status</h2>
               <select
                 onChange={(e) => setFilterStatus(e.target.value)}
+                value={filterStatus}
                 className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               >
                 <option value="">All</option>
@@ -155,7 +244,7 @@ const ReportPage = () => {
             </section>
 
             <section className="w-full py-2 pt-6">
-              <h2 className="text-2xl">Reports</h2>
+              <h2 className="text-sm">Reports</h2>
               <div className="flex w-full flex-col items-stretch py-1">
                 {filteredReports?.map((el) => (
                   <div
@@ -167,17 +256,17 @@ const ReportPage = () => {
                         : "hover:bg-gray-50"
                     }`}
                   >
-                    <div className="flex h-full w-8 justify-center self-start p-2">
-                      <div
-                        className={twMerge(
-                          `aspect-square h-auto w-4 rounded-full ${(el.status === "Reported" || !el.status) && "bg-red-700"}`,
-                          `${el.status === "On Progress" && "bg-orange-700"}`,
-                          `${el.status === "Finished" && "bg-green-700"}`,
-                        )}
-                      />
-                    </div>
-                    <div className="flex grow flex-col">
-                      <p>{el.text}</p>
+                    <div className="flex w-full grow flex-col items-start justify-start text-wrap">
+                      <div className="flex items-center justify-center gap-2">
+                        <div
+                          className={twMerge(
+                            `aspect-square h-auto w-4 rounded-full ${(el.status === "Reported" || !el.status) && "bg-red-700"}`,
+                            `${el.status === "On Progress" && "bg-[#FFBF00]"}`,
+                            `${el.status === "Finished" && "bg-green-700"}`,
+                          )}
+                        />
+                        <p>{el.text}</p>
+                      </div>
                       {el._id === selectedReportId && (
                         <div className="text-sm font-light text-slate-700">
                           <p>Progress: {el.status}</p>
@@ -186,21 +275,46 @@ const ReportPage = () => {
                           <p>Downvotes: 0</p>
                           {el.status !== "Reported" && (
                             <>
-                              <p>{el.progress.text}</p>
-                              <p>{el.progress.imgUrl}</p>
+                              <img
+                                src={el.progress.imgUrl}
+                                alt=""
+                                className="aspect-square h-auto w-full bg-slate-600/10 object-contain"
+                              />
+                              <p>Description: {el.progress.text}</p>
                             </>
                           )}
                           {(currentUserContext?.currentUser?.role ===
                             "officer" ||
                             currentUserContext?.currentUser?.role ===
-                              "admin") && (
-                            <Button
-                              className="mt-2 w-fit py-1"
-                              onClick={handleModalOpen}
-                            >
-                              Process
-                            </Button>
-                          )}
+                              "admin") &&
+                            el.status === "Reported" && (
+                              <Button
+                                className="mt-2 w-fit py-1"
+                                onClick={handleModalOpen}
+                              >
+                                Process
+                              </Button>
+                            )}
+                          {(currentUserContext?.currentUser?.role ===
+                            "officer" ||
+                            currentUserContext?.currentUser?.role ===
+                              "admin") &&
+                            el.status === "On Progress" && (
+                              <div className="flex flex-row gap-1 p-2">
+                                <Button
+                                  className="mt-2 w-fit py-1"
+                                  onClick={handleModalOpen}
+                                >
+                                  Update
+                                </Button>
+                                <Button
+                                  className="mt-2 w-fit py-1"
+                                  onClick={handleFinish}
+                                >
+                                  Finish
+                                </Button>
+                              </div>
+                            )}
                         </div>
                       )}
                     </div>
@@ -213,7 +327,7 @@ const ReportPage = () => {
       </div>
       <Modal isOpen={isModalOpen} onClose={handleModalClose}>
         <h2 className="text-2xl">Process this Report/issue</h2>
-        <form action="" method="post">
+        <form action="" method="post" onSubmit={onSubmit}>
           <div className="py-4">
             <label htmlFor="file" className="h-fit">
               Progress Image
@@ -222,18 +336,19 @@ const ReportPage = () => {
           </div>
           <div className="py-4">
             <label htmlFor="text" className="h-fit">
+              Status
+            </label>
+            <label htmlFor="text" className="h-fit">
               Brief Explanation
             </label>
             <TextAreaInput
               name="text"
-              value={formData.imgUrl}
-              onChange={(e) => {
-                setFormData((prevData) => ({
-                  ...prevData,
-                  text: e.target.value,
-                }));
-              }}
+              value={formData.text}
+              onChange={onChange}
             />
+            <div className="flex w-full items-center justify-center py-4">
+              <Button className="w-full">Submit</Button>
+            </div>
           </div>
         </form>
       </Modal>

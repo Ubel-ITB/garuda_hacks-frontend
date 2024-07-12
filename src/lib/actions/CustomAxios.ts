@@ -1,7 +1,11 @@
 import axios from "axios";
 import { BACKEND_BASE_URL } from "../constant";
 
-const CustomAxios = (action: "get" | "post" | "put" | "delete", pathUrl: string, formData?: unknown) => {
+const CustomAxios = (
+  action: "get" | "post" | "put" | "delete",
+  pathUrl: string,
+  formData?: unknown,
+) => {
   const headers = {
     headers: {
       access_token: localStorage.getItem("access_token") || "",

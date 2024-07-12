@@ -38,6 +38,6 @@ export interface IReportForm {
 }
 
 export interface IReportProgressForm {
-  imgUrl: string;
   text: string;
+  imgUrl: string;
 }

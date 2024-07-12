@@ -15,8 +15,8 @@ const Modal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 opacity-0 duration-200 ease-in hover:opacity-100">
-      <div className="rounded-md bg-white p-6 shadow-lg">
+    <div className="fixed inset-0 z-[101] flex h-screen items-center justify-center bg-black bg-opacity-50 py-10 opacity-0 duration-200 ease-in hover:opacity-100">
+      <div className="h-full overflow-y-auto rounded-md bg-white p-6 shadow-lg">
         {children}
         <button
           onClick={onClose}
