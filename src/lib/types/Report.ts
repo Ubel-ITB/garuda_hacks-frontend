@@ -5,5 +5,5 @@ export interface IReportForm {
   lat: number;
   lng: number;
   selectedFile: File | null;
-  CategoryID: string;
+  CategoryId: string;
 }

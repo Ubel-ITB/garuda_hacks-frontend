@@ -34,7 +34,7 @@ const ReportPageCreate: React.FC = () => {
     lat: -6.256754465448308,
     lng: 106.61895122539383,
     selectedFile: null,
-    CategoryID: "",
+    CategoryId: "",
   });
 
   const handleSetLocation = () => {
@@ -67,7 +67,7 @@ const ReportPageCreate: React.FC = () => {
     const { value } = event.target;
     setFormData((prevData) => ({
       ...prevData,
-      CategoryID: value,
+      CategoryId: value,
     }));
   };
 
@@ -187,8 +187,8 @@ const ReportPageCreate: React.FC = () => {
             </label>
             <select
               id="category"
-              name="selectedCategory"
-              value={formData.CategoryID}
+              name="CategoryId"
+              value={formData.CategoryId}
               onChange={handleCategoryChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             >
