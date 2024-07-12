@@ -19,6 +19,35 @@ import { handleFetchError } from "../../lib/actions/HandleError";
 import Swal from "sweetalert2";
 import { FaShareAlt } from "react-icons/fa";
 import { TiArrowRightThick } from "react-icons/ti";
+import "intro.js/introjs.css";
+import { Steps } from "intro.js-react";
+import Select from "react-select";
+
+const steps = [
+  {
+    element: "#add-button",
+    intro: "Not happy with your neighbourhood condition? Add a report",
+    position: "right",
+  },
+  {
+    element: "#filter-category",
+    intro: "Filter reports by category (Broken Lane, Unclean Location, etc)",
+  },
+  {
+    element: "#filter-status",
+    intro: "Filter by status (Reported, On Progress, Completed",
+  },
+  {
+    element: "#reports-list",
+    intro: "Lists of reports will be shown here",
+  },
+];
+
+const options = {
+  nextLabel: "Next",
+  prevLabel: "Previous",
+  doneLabel: "Complete Tour",
+};
 
 const ReportPage = () => {
   const navigate = useNavigate();
@@ -46,7 +75,7 @@ const ReportPage = () => {
     text: "",
     imgUrl: "",
   });
-
+  const [stepsEnabled, setStepsEnabled] = useState(true);
   const mapRef = useRef<mapboxgl.Map | null>(null);
 
   const filteredReports = selectedReportId
@@ -194,8 +223,32 @@ const ReportPage = () => {
     }
   };
 
+  const categoryOptions = [
+    { _id: "", name: "All" },
+    ...(categories?.length ? categories : []),
+  ].map((category) => ({
+    value: category._id,
+    label: category.name,
+    name: category.name,
+  }));
+
+  const statusOptions = ["All", "Reported", "On Progress", "Finished"]?.map(
+    (el) => ({
+      value: el === "All" ? "" : el,
+      label: el,
+      name: el,
+    }),
+  );
+
   return (
     <main className="relative flex h-[160vh] grow flex-col pt-24 md:h-0">
+      <Steps
+        enabled={stepsEnabled}
+        steps={steps}
+        initialStep={0}
+        onExit={() => setStepsEnabled(false)}
+        options={options}
+      />
       <div className="flex h-[160vh] max-h-full w-screen grow flex-col md:flex-row">
         <div className="h-[60vh] w-full grow md:h-full md:w-0">
           <Map
@@ -236,48 +289,53 @@ const ReportPage = () => {
           <div className="flex w-full flex-col items-start">
             <div className="flex w-full items-center justify-between py-2">
               <h1 className="text-xl font-bold sm:text-2xl">Report System</h1>
-              <NavLink to="/reports/create">
+              <NavLink to="/reports/create" id="add-button">
                 <Button>Add</Button>
               </NavLink>
             </div>
 
             <section className="w-full py-2">
               <h2>Filter By Categories</h2>
-              <select
-                onChange={(e) => {
+              <Select
+                id="filter-category"
+                onChange={(option) => {
                   setFilterStatus("");
-                  setFilterCategoryId(e.target.value);
+                  setFilterCategoryId(option?.value || "");
                   setSelectedReportId("");
                 }}
-                value={filterCategoryId}
-                className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              >
-                <option value="">All</option>
-                {categories?.map((category) => (
-                  <option key={category._id} value={category._id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
+                value={
+                  categoryOptions?.find(
+                    (option) => option.value === filterCategoryId,
+                  ) || null
+                }
+                options={categoryOptions}
+                className="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              />
             </section>
 
             <section className="w-full py-2">
               <h2>Filter By Status</h2>
-              <select
-                onChange={(e) => setFilterStatus(e.target.value)}
-                value={filterStatus}
-                className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              >
-                <option value="">All</option>
-                <option value="Reported">Reported</option>
-                <option value="On Progress">On Progress</option>
-                <option value="Finished">Finished</option>
-              </select>
+              <Select
+                id="filter-status"
+                onChange={(option) => {
+                  setFilterStatus(option?.value || "");
+                }}
+                value={
+                  statusOptions?.find(
+                    (option) => option.value === filterStatus,
+                  ) || null
+                }
+                options={statusOptions}
+                className="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              />
             </section>
 
             <section className="w-full py-2 pt-6">
               <h2 className="text-sm">Reports</h2>
-              <div className="flex w-full flex-col items-stretch py-1">
+              <div
+                className="flex w-full flex-col items-stretch py-1"
+                id="reports-list"
+              >
                 {filteredReports?.map((el) => (
                   <div
                     key={el._id}
@@ -298,7 +356,7 @@ const ReportPage = () => {
                               `${el.status === "Finished" && "bg-green-700"}`,
                             )}
                           />
-                          <p>{el.text}</p>
+                          <p className="text-sm">{el.text}</p>
                         </div>
                       </div>
                       {el._id === selectedReportId && (
@@ -365,13 +423,13 @@ const ReportPage = () => {
                         </div>
                       )}
                     </div>
-                    {el._id === selectedReportId && (
+                    {el._id === selectedReportId ? (
                       <div className="flex w-fit max-w-fit flex-col items-center justify-start gap-6 self-stretch py-2 pr-2">
                         <button
-                          className="flex flex-col items-center gap-1"
+                          className="flex flex-col items-center gap-1 hover:text-blue-500"
                           onClick={(event) => handleShareClick(el._id, event)}
                         >
-                          <FaShareAlt size={15} />
+                          <FaShareAlt size={19} />
                           <p className="text-xs">{el.totalshares}</p>
                         </button>
                         <div className="flex flex-col">
@@ -415,6 +473,10 @@ const ReportPage = () => {
                           </button>
                         </div>
                       </div>
+                    ) : (
+                      <p className="shrink-0 text-nowrap text-xs">
+                        shares: {el.totalshares}
+                      </p>
                     )}
                   </div>
                 ))}
