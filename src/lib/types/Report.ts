@@ -36,3 +36,8 @@ export interface IReportForm {
   UpvotedUserIds: [];
   DownVotedUserIds: [];
 }
+
+export interface IReportProgressForm {
+  imgUrl: string;
+  text: string;
+}

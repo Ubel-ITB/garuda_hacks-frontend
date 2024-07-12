@@ -1,16 +1,21 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import Map, { NavigationControl, Marker, ViewState } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { NavLink } from "react-router-dom";
 import { IReportCategory } from "../../lib/types/ReportCategory";
-import { IReport } from "../../lib/types/Report";
+import { IReport, IReportProgressForm } from "../../lib/types/Report";
 import { MAPBOX_TOKEN } from "../../lib/constant";
 import useFetch from "../../lib/CustomHooks/useFetch";
 import Button from "../../components/universal/Button";
+import Modal from "../../components/universal/Modal"; // Import the Modal component
 import { IoLocation } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
+import { CurrentUserContext } from "../../lib/contexts/CurrentUserContext";
+import InputImage from "../../components/universal/InputImage";
+import TextAreaInput from "../../components/universal/TextAreaInput";
 
 const ReportPage = () => {
+  const currentUserContext = useContext(CurrentUserContext);
   const { response: reports } = useFetch<IReport[]>({
     url: "/reports",
   });
@@ -28,6 +33,12 @@ const ReportPage = () => {
   const [filterCategoryId, setFilterCategoryId] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [formData, setFormData] = useState<IReportProgressForm>({
+    imgUrl: "",
+    text: "",
+  });
 
   const mapRef = useRef<mapboxgl.Map | null>(null);
 
@@ -62,6 +73,22 @@ const ReportPage = () => {
     }
   };
 
+  const handleModalOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files?.length) {
+      const file = event.target.files[0];
+      setFile(file);
+    }
+  };
+
   return (
     <main className="relative flex h-fit grow flex-col pt-24">
       <div className="flex h-0 w-screen grow">
@@ -90,7 +117,7 @@ const ReportPage = () => {
             ))}
           </Map>
         </div>
-        <div className="w-fit min-w-[20vw] max-w-[300px] px-6">
+        <div className="w-fit min-w-[300px] px-6">
           <div className="flex flex-col items-start">
             <div className="flex w-full items-center justify-between py-2">
               <h1 className="text-2xl font-bold">Report</h1>
@@ -99,7 +126,7 @@ const ReportPage = () => {
               </NavLink>
             </div>
 
-            <section className="py-2">
+            <section className="w-full py-2">
               <h2>Filter By Categories</h2>
               <select
                 onChange={(e) => setFilterCategoryId(e.target.value)}
@@ -114,7 +141,7 @@ const ReportPage = () => {
               </select>
             </section>
 
-            <section className="py-2">
+            <section className="w-full py-2">
               <h2>Filter By Status</h2>
               <select
                 onChange={(e) => setFilterStatus(e.target.value)}
@@ -163,6 +190,17 @@ const ReportPage = () => {
                               <p>{el.progress.imgUrl}</p>
                             </>
                           )}
+                          {(currentUserContext?.currentUser?.role ===
+                            "officer" ||
+                            currentUserContext?.currentUser?.role ===
+                              "admin") && (
+                            <Button
+                              className="mt-2 w-fit py-1"
+                              onClick={handleModalOpen}
+                            >
+                              Process
+                            </Button>
+                          )}
                         </div>
                       )}
                     </div>
@@ -173,6 +211,32 @@ const ReportPage = () => {
           </div>
         </div>
       </div>
+      <Modal isOpen={isModalOpen} onClose={handleModalClose}>
+        <h2 className="text-2xl">Process this Report/issue</h2>
+        <form action="" method="post">
+          <div className="py-4">
+            <label htmlFor="file" className="h-fit">
+              Progress Image
+            </label>
+            <InputImage file={file} onChange={handleFileChange} />
+          </div>
+          <div className="py-4">
+            <label htmlFor="text" className="h-fit">
+              Brief Explanation
+            </label>
+            <TextAreaInput
+              name="text"
+              value={formData.imgUrl}
+              onChange={(e) => {
+                setFormData((prevData) => ({
+                  ...prevData,
+                  text: e.target.value,
+                }));
+              }}
+            />
+          </div>
+        </form>
+      </Modal>
     </main>
   );
 };
